@@ -12,7 +12,7 @@ using ShopingList.Data;
 namespace ShopingList.Migrations
 {
     [DbContext(typeof(ShopingListDBContext))]
-    [Migration("20220928203332_Init")]
+    [Migration("20220929102930_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -226,7 +226,22 @@ namespace ShopingList.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ShopingList.Areas.Identity.Data.Product", b =>
+            modelBuilder.Entity("ProductShopingList", b =>
+                {
+                    b.Property<int>("ProductListId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShopingListsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductListId", "ShopingListsId");
+
+                    b.HasIndex("ShopingListsId");
+
+                    b.ToTable("ProductShopingList");
+                });
+
+            modelBuilder.Entity("ShopingList.Data.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -310,7 +325,7 @@ namespace ShopingList.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ShopingList.Areas.Identity.Data.ProductCategory", b =>
+            modelBuilder.Entity("ShopingList.Data.Models.ProductCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -352,6 +367,23 @@ namespace ShopingList.Migrations
                             Id = 5,
                             Name = "Beverages"
                         });
+                });
+
+            modelBuilder.Entity("ShopingList.Data.Models.ShopingList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShopingLists");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -405,9 +437,24 @@ namespace ShopingList.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ShopingList.Areas.Identity.Data.Product", b =>
+            modelBuilder.Entity("ProductShopingList", b =>
                 {
-                    b.HasOne("ShopingList.Areas.Identity.Data.ProductCategory", "Category")
+                    b.HasOne("ShopingList.Data.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShopingList.Data.Models.ShopingList", null)
+                        .WithMany()
+                        .HasForeignKey("ShopingListsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ShopingList.Data.Models.Product", b =>
+                {
+                    b.HasOne("ShopingList.Data.Models.ProductCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)

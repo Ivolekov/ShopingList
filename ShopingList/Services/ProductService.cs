@@ -1,4 +1,6 @@
-﻿using ShopingList.Data;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
+using ShopingList.Data;
 using ShopingList.Data.Models;
 
 namespace ShopingList.Services
@@ -12,7 +14,7 @@ namespace ShopingList.Services
         {
             try
             {
-                context.Add(product);
+                context.Products.Add(product);
                 await context.SaveChangesAsync();
                 return product;
             }
@@ -23,59 +25,165 @@ namespace ShopingList.Services
             }
         }
 
-        public Task<ProductCategory> CreateProductCategory(ProductCategory category)
+        public async Task<ProductCategory> CreateProductCategory(ProductCategory category)
         {
-            throw new NotImplementedException();
+            try
+            {
+                context.ProductCategories.Add(category);
+                await context.SaveChangesAsync();
+                return category;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
-        public Task DeleteProductById(int productId)
+        public async Task DeleteProductById(int productId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var product = await this.GetProductById(productId);
+                if (product == null)
+                {
+                    throw new Exception("");
+                }
+                context.Products.Remove(product);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
-        public Task DeleteProductCategoryById(int categoryId)
+        public async Task DeleteProductCategoryById(int categoryId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var productCategory = await this.GetProductCategoryById(categoryId);
+                if (productCategory == null)
+                {
+                    throw new Exception("");
+                }
+                context.ProductCategories.Remove(productCategory);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
-        public Task<IEnumerable<ProductCategory>> GetAllProductCategories()
+        public async Task<IEnumerable<ProductCategory>> GetAllProductCategories()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await context.ProductCategories.OrderBy(c => c.Id).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
-        public Task<IEnumerable<Product>> GetAllProducts()
+        public async Task<IEnumerable<Product>> GetAllProducts()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await context.Products.OrderBy(c => c.Id).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
-        public Task<Product> GetProductById(int productId)
+        public async Task<Product> GetProductById(int productId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await context.Products.Where(x => x.Id == productId).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task<Product> GetProductByName(string productName)
+        public async Task<Product> GetProductByName(string productName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await context.Products.Where(x => x.Name == productName).FirstOrDefaultAsync();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
-        public Task<ProductCategory> GetProductCategoryById(int categoryId)
+        public async Task<ProductCategory> GetProductCategoryById(int categoryId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await context.ProductCategories.Where(x => x.Id == categoryId).FirstOrDefaultAsync();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
-        public Task<ProductCategory> GetProductCategoryByName(string categoryName)
+        public async Task<ProductCategory> GetProductCategoryByName(string categoryName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await context.ProductCategories.Where(x => x.Name == categoryName).FirstOrDefaultAsync();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
-        public Task UpdateProduct(Product product)
+        public async Task UpdateProduct(Product product)
         {
-            throw new NotImplementedException();
+            try
+            {
+                context.Products.Update(product);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
-        public Task UpdateProductCategory(ProductCategory category)
+        public async Task UpdateProductCategory(ProductCategory category)
         {
-            throw new NotImplementedException();
+            try
+            {
+                context.ProductCategories.Update(category);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
     }
 }

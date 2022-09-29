@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ShopingList.Areas.Identity.Data;
+using ShopingList.Data.Models;
 
 namespace ShopingList.Data;
 
@@ -14,6 +14,7 @@ public class ShopingListDBContext : IdentityDbContext<IdentityUser>
 
     public DbSet<ProductCategory> ProductCategories { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<Models.ShopingList> ShopingLists { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -41,6 +42,16 @@ public class ShopingListDBContext : IdentityDbContext<IdentityUser>
                 new { Id = 9, Name = "Soda", CategoryId = 5 },
                 new { Id = 10, Name = "Beer", CategoryId = 5 }
             );
+
+        //builder.Entity<Models.ShopingList>()
+        //    .HasMany(sp => sp.Products)
+        //    .WithMany(p => p.ShopingLists);
+            //.Map(sp =>
+            // {
+            //     sp.MapLeftKey("ShopingListRefId");
+            //     sp.MapRightKey("ProductRefId");
+            //     sp.ToTable("ShopingListProduct");
+            // });
 
         base.OnModelCreating(builder);
     }

@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ShopingList.Areas.Identity.Data
+namespace ShopingList.Data.Models
 {
     public class ProductCategory
     {
         [Key]
         public int Id { get; set; }
-        
+
         [Required]
         public string Name { get; set; }
     }

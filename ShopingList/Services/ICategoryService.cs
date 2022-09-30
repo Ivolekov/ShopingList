@@ -10,5 +10,6 @@ namespace ShopingList.Services
         Task<ProductCategory> GetProductCategoryByName(string categoryName);
         Task UpdateProductCategory(ProductCategory category);
         Task DeleteProductCategoryById(int categoryId);
+        Task DeleteProductCategory(ProductCategory category);
     }
 }

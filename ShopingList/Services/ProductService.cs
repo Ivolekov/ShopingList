@@ -89,7 +89,19 @@ namespace ShopingList.Services
                 throw;
             }
         }
+        public async Task DeleteProductCategory(ProductCategory category)
+        {
+            try
+            {
+                context.ProductCategories.Remove(category);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
 
+                throw;
+            }
+        }
         public async Task<IEnumerable<ProductCategory>> GetAllProductCategories()
         {
             try

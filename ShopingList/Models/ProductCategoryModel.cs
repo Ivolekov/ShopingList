@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ShopingList.Data.Models
+namespace ShopingList.Models
 {
-    public class ProductCategory
+    public class ProductCategoryModel
     {
-        [Key]
         public int Id { get; set; }
 
         [Required]
+        [MaxLength(100, ErrorMessage = "The category name should be less than 100 symbols!")]
         public string Name { get; set; } = string.Empty;
     }
 }

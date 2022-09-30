@@ -22,6 +22,7 @@ namespace ShopingList.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var groceriestList = await shopingListService.GetGroceriesListById(id);
+            
             if (groceriestList == null)
             {
                 return NotFound();
@@ -31,7 +32,7 @@ namespace ShopingList.Controllers
         }
 
         // GET: ShopingListController/Create
-        public async Task<IActionResult> Create()
+        public ActionResult Create()
         {
             return View();
         }

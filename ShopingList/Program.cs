@@ -10,7 +10,14 @@ var connectionString = builder.Configuration.GetConnectionString("ShopingListDBC
 builder.Services.AddDbContext<ShopingListDBContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<IdentityUser>(options => 
+{
+    options.Password.RequiredLength = 6;
+    options.Password.RequireDigit = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+})
     .AddEntityFrameworkStores<ShopingListDBContext>();
 
 // Add services to the container.

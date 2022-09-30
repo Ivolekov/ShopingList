@@ -19,6 +19,7 @@ builder.Services.AddRazorPages();
 builder.Services
     .AddScoped<ICategoryService, ProductService>()
     .AddScoped<IProductService, ProductService>()
+    .AddScoped<IShopingListService, ShopingListService>()
     .AddControllers();
 
 var app = builder.Build();

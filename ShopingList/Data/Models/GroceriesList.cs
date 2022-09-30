@@ -3,12 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShopingList.Data.Models
 {
-    public class ShopingList
+    public class GroceriesList
     {
-        public ShopingList()
-        {
-            ProductList = new List<Product>();
-        }
+        public GroceriesList() => ProductList = new List<Product>();
 
         [Key]
         public int Id { get; set; }

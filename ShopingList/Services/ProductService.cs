@@ -58,7 +58,19 @@ namespace ShopingList.Services
                 throw;
             }
         }
+        public async Task DeleteProduct(Product product)
+        {
+            try
+            {
+                context.Products.Remove(product);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
 
+                throw;
+            }
+        }
         public async Task DeleteProductCategoryById(int categoryId)
         {
             try
@@ -82,7 +94,7 @@ namespace ShopingList.Services
         {
             try
             {
-                return await context.ProductCategories.OrderBy(c => c.Id).ToListAsync();
+                return await context.ProductCategories.OrderBy(c => c.Name).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -95,7 +107,7 @@ namespace ShopingList.Services
         {
             try
             {
-                return await context.Products.OrderBy(c => c.Id).ToListAsync();
+                return await context.Products.Include(p => p.Category).OrderBy(c => c.Category.Name).ToListAsync();
             }
             catch (Exception ex)
             {

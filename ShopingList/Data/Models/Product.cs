@@ -17,7 +17,7 @@ namespace ShopingList.Data.Models
 
         public int CategoryId { get; set; }
 
-        [Required]
+        //[Required]
         public ProductCategory Category { get; set; }
 
         public ICollection<ShopingList> ShopingLists { get; set; }

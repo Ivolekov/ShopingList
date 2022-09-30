@@ -115,7 +115,7 @@ namespace ShopingList.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    return LocalRedirect(returnUrl + "ShopingList/Index");
                 }
                 if (result.RequiresTwoFactor)
                 {

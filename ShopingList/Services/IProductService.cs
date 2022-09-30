@@ -10,5 +10,6 @@ namespace ShopingList.Services
         Task<Product> GetProductByName(string productName);
         Task UpdateProduct(Product product);
         Task DeleteProductById(int productId);
+        Task DeleteProduct(Product product);
     }
 }

@@ -1,15 +1,18 @@
 ﻿@model IEnumerable<ShopingList.Data.Models.Product>
 
 @{
-    ViewData["Title"] = "Index";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Products List";
 }
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<h1>Index</h1>
+<h1>Products List</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-info customBtn" asp-controller="Products" asp-action="Create">Create Product</a>
+    <a class="btn btn-info customBtn" asp-action="Create">Create Category</a>
 </p>
-<table class="table">
+<table class="table" id="products">
     <thead>
         <tr>
             <th>
@@ -32,8 +35,7 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

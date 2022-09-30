@@ -7,9 +7,7 @@ namespace ShopingList.Services
         Task<Product> CreateProduct(Product product);
         Task<IEnumerable<Product>> GetAllProducts();
         Task<Product> GetProductById(int productId);
-        Task<Product> GetProductByName(string productName);
         Task UpdateProduct(Product product);
-        Task DeleteProductById(int productId);
         Task DeleteProduct(Product product);
     }
 }

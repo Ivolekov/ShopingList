@@ -145,5 +145,12 @@ namespace ShopingList.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> GetProductsList(string prefix) 
+        {
+            var products = await productService.GetProductsByPrefix(prefix);
+            return Json(products);
+        }
     }
 }

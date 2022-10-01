@@ -67,11 +67,36 @@ namespace ShopingList.Services
             }
         }
 
+        public async Task<IEnumerable<Product>> GetProductsByPrefix(string prefix)
+        {
+            try
+            {
+                return await context.Products.Where(p => p.Name.Contains(prefix)).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<Product> GetProductById(int productId)
         {
             try
             {
                 return await context.Products.Where(x => x.Id == productId).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Product> GetProductByName(string productName)
+        {
+            try
+            {
+                return await context.Products.Where(x => x.Name == productName).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {

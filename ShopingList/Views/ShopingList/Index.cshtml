@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ShopingList.Data.Models.GroceriesList>
+﻿@model IEnumerable<ShopingList.Data.Models.GroceryList>
 
 @{
     ViewData["Title"] = "Groceries List";
@@ -30,13 +30,13 @@
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                    @if (item.ProductList.Count == 0)
+                    @*@if (item.ProductList.Count == 0)
                     {
                        <p>No items</p>
                     }else
                     {
                         <p>Products @item.ProductList.Count</p>
-                    }
+                    }*@
                 </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

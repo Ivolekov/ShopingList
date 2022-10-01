@@ -1,34 +1,47 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShopingList.Data.Models;
+using ShopingList.Extentions;
 using ShopingList.Models;
 using ShopingList.Services;
 
 namespace ShopingList.Controllers
 {
+    [Authorize]
     public class ShopingListController : Controller
     {
         private readonly IShopingListService shopingListService;
+        private readonly IProductService productService;
 
-        public ShopingListController(IShopingListService shopingListService) => this.shopingListService = shopingListService;
+        public ShopingListController(IShopingListService shopingListService, IProductService productService)
+        {
+            this.shopingListService = shopingListService; 
+            this.productService = productService;
+        }
 
         // GET: ShopingListController
         public async Task<IActionResult> Index()
         {
-            return View(await shopingListService.GetAllShopingList());
+            return View(await shopingListService.GetAllGroceriesList(this.User.GetId()));
         }
 
         // GET: ShopingListController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var groceriestList = await shopingListService.GetGroceriesListById(id);
-            
-            if (groceriestList == null)
+            var groceryList = await shopingListService.GetGroceriesListById(id);
+
+            if (groceryList == null)
             {
                 return NotFound();
             }
 
-            return View(groceriestList);
+            if (groceryList.UserId != this.User.GetId())
+            {
+                return Unauthorized(); 
+            }
+
+            return View(groceryList);
         }
 
         // GET: ShopingListController/Create
@@ -44,9 +57,10 @@ namespace ShopingList.Controllers
         {
             if (ModelState.IsValid)
             {
-                var groceriesList = new GroceriesList 
+                var groceriesList = new GroceryList
                 {
-                    Title = model.Title
+                    Title = model.Title,
+                    UserId = this.User.GetId()
                 };
                 await shopingListService.CreateGroceriesList(groceriesList);
                 return RedirectToAction(nameof(Index));
@@ -59,14 +73,19 @@ namespace ShopingList.Controllers
         // GET: ShopingListController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var groceriesList = await shopingListService.GetGroceriesListById(id);
+            var groceryList = await shopingListService.GetGroceriesListById(id);
 
-            if (groceriesList == null)
+            if (groceryList == null)
             {
                 return NotFound();
             }
 
-            return View(groceriesList);
+            if (groceryList.UserId != this.User.GetId())
+            {
+                return Unauthorized();
+            }
+
+            return View(groceryList);
         }
 
         // POST: ShopingListController/Edit/5
@@ -78,34 +97,38 @@ namespace ShopingList.Controllers
             {
                 return NotFound();
             }
-            
+
             if (ModelState.IsValid)
             {
-                GroceriesList groceriesList = new GroceriesList
+                GroceryList groceryList = await shopingListService.GetGroceriesListById(id);
+
+                if (groceryList.UserId != this.User.GetId())
                 {
-                    Id = model.Id,
-                    Title = model.Title
-                };
-               
-                await shopingListService.UpdateGroceriesList(groceriesList);
-                return View(groceriesList);
+                    return Unauthorized();
+                }
+
+                groceryList.Title = model.Title;
+                await shopingListService.UpdateGroceriesList(groceryList);
+                return View(groceryList);
             }
 
             return View(model);
-
         }
 
         // GET: ShopingListController/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var groceriesList = await shopingListService.GetGroceriesListById(id);
-            
-            if (groceriesList == null)
+            var groceryList = await shopingListService.GetGroceriesListById(id);
+
+            if (groceryList == null)
             {
                 return NotFound();
             }
-
-            return View(groceriesList);
+            if (groceryList.UserId != this.User.GetId())
+            {
+                return Unauthorized();
+            }
+            return View(groceryList);
         }
 
         // POST: ShopingListController/Delete/5
@@ -113,12 +136,40 @@ namespace ShopingList.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var groceriesList = await shopingListService.GetGroceriesListById(id);
-            if (groceriesList != null)
+            var groceryList = await shopingListService.GetGroceriesListById(id);
+            if (groceryList.UserId != this.User.GetId())
             {
-                await shopingListService.DeleteGroceriesList(groceriesList);
+                return Unauthorized();
+            }
+            if (groceryList != null)
+            {
+                await shopingListService.DeleteGroceriesList(groceryList);
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddProduct(string productName, int id) 
+        {
+            var product = await productService.GetProductByName(productName);
+            var groceryList = await shopingListService.GetGroceriesListById(id);
+            if (product == null) 
+            {
+                return NotFound(product);
+            }
+            if (groceryList == null)
+            {
+                return NotFound(groceryList);
+            }
+            if (groceryList.UserId != this.User.GetId())
+            {
+                return Unauthorized();
+            }
+
+            //groceriestList.ProductList.Add(product);
+            await shopingListService.AddProductToList(product, id);
+            return PartialView("_GroceriesListProducts", groceryList);
         }
     }
 }

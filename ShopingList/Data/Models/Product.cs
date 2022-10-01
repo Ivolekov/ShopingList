@@ -5,10 +5,7 @@ namespace ShopingList.Data.Models
 {
     public class Product
     {
-        public Product()
-        {
-            this.ShopingLists = new List<GroceriesList>();
-        }
+        public Product() => Product_GroceryList = new List<Product_GroceryList>();
 
         [Key]
         public int Id { get; set; }
@@ -17,9 +14,8 @@ namespace ShopingList.Data.Models
 
         public int CategoryId { get; set; }
 
-        //[Required]
         public ProductCategory Category { get; set; }
 
-        public ICollection<GroceriesList> ShopingLists { get; set; }
+        public ICollection<Product_GroceryList> Product_GroceryList { get; set; }
     }
 }

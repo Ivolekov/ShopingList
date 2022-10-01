@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ShopingList.Data.Models;
+using System.Reflection.Emit;
 
 namespace ShopingList.Data;
 
@@ -14,11 +15,23 @@ public class ShopingListDBContext : IdentityDbContext<IdentityUser>
 
     public DbSet<ProductCategory> ProductCategories { get; set; }
     public DbSet<Product> Products { get; set; }
-    public DbSet<GroceriesList> ShopingLists { get; set; }
+    public DbSet<GroceryList> GroceryLists { get; set; }
+    public DbSet<Product_GroceryList> Product_GroceryLists { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.Entity<Product>().HasOne(p => p.Category);
+        //builder.Entity<Product>()
+        //    .HasOne(p => p.Category);
+
+        builder.Entity<Product_GroceryList>()
+               .HasOne(p => p.Product)
+               .WithMany(pg => pg.Product_GroceryList)
+               .HasForeignKey(pg => pg.ProductId);
+
+        builder.Entity<Product_GroceryList>()
+               .HasOne(p => p.Product)
+               .WithMany(pg => pg.Product_GroceryList)
+               .HasForeignKey(pg => pg.ProductId);
 
         builder.Entity<ProductCategory>()
             .HasData(
@@ -42,16 +55,6 @@ public class ShopingListDBContext : IdentityDbContext<IdentityUser>
                 new { Id = 9, Name = "Soda", CategoryId = 5 },
                 new { Id = 10, Name = "Beer", CategoryId = 5 }
             );
-
-        //builder.Entity<Models.ShopingList>()
-        //    .HasMany(sp => sp.Products)
-        //    .WithMany(p => p.ShopingLists);
-            //.Map(sp =>
-            // {
-            //     sp.MapLeftKey("ShopingListRefId");
-            //     sp.MapRightKey("ProductRefId");
-            //     sp.ToTable("ShopingListProduct");
-            // });
 
         base.OnModelCreating(builder);
     }

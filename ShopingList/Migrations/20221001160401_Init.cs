@@ -28,6 +28,7 @@ namespace ShopingList.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -59,19 +60,6 @@ namespace ShopingList.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductCategories", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ShopingLists",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ShopingLists", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -181,6 +169,26 @@ namespace ShopingList.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GroceryLists",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroceryLists", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroceryLists_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -197,33 +205,35 @@ namespace ShopingList.Migrations
                         column: x => x.CategoryId,
                         principalTable: "ProductCategories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductShopingList",
+                name: "Product_GroceryLists",
                 columns: table => new
                 {
-                    ProductListId = table.Column<int>(type: "int", nullable: false),
-                    ShopingListsId = table.Column<int>(type: "int", nullable: false),
-                    IsBought = table.Column<bool>(type: "bit", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    GroceriesListId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    IsBought = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductShopingList", x => new { x.ProductListId, x.ShopingListsId });
+                    table.PrimaryKey("PK_Product_GroceryLists", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductShopingList_Products_ProductListId",
-                        column: x => x.ProductListId,
+                        name: "FK_Product_GroceryLists_GroceryLists_GroceriesListId",
+                        column: x => x.GroceriesListId,
+                        principalTable: "GroceryLists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Product_GroceryLists_Products_ProductId",
+                        column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ProductShopingList_ShopingLists_ShopingListsId",
-                        column: x => x.ShopingListsId,
-                        principalTable: "ShopingLists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -295,14 +305,24 @@ namespace ShopingList.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GroceryLists_UserId",
+                table: "GroceryLists",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Product_GroceryLists_GroceriesListId",
+                table: "Product_GroceryLists",
+                column: "GroceriesListId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Product_GroceryLists_ProductId",
+                table: "Product_GroceryLists",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProductShopingList_ShopingListsId",
-                table: "ProductShopingList",
-                column: "ShopingListsId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -323,19 +343,19 @@ namespace ShopingList.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ProductShopingList");
+                name: "Product_GroceryLists");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "GroceryLists");
 
             migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "ShopingLists");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "ProductCategories");

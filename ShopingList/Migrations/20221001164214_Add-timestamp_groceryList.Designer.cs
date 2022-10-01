@@ -12,8 +12,8 @@ using ShopingList.Data;
 namespace ShopingList.Migrations
 {
     [DbContext(typeof(ShopingListDBContext))]
-    [Migration("20220929102930_Init")]
-    partial class Init
+    [Migration("20221001164214_Add-timestamp_groceryList")]
+    partial class Addtimestamp_groceryList
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -88,6 +88,10 @@ namespace ShopingList.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -139,6 +143,8 @@ namespace ShopingList.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -226,19 +232,30 @@ namespace ShopingList.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ProductShopingList", b =>
+            modelBuilder.Entity("ShopingList.Data.Models.GroceryList", b =>
                 {
-                    b.Property<int>("ProductListId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("ShopingListsId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.HasKey("ProductListId", "ShopingListsId");
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("ShopingListsId");
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("ProductShopingList");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("GroceryLists");
                 });
 
             modelBuilder.Entity("ShopingList.Data.Models.Product", b =>
@@ -325,6 +342,35 @@ namespace ShopingList.Migrations
                         });
                 });
 
+            modelBuilder.Entity("ShopingList.Data.Models.Product_GroceryList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("GroceriesListId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsBought")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroceriesListId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Product_GroceryLists");
+                });
+
             modelBuilder.Entity("ShopingList.Data.Models.ProductCategory", b =>
                 {
                     b.Property<int>("Id")
@@ -369,21 +415,11 @@ namespace ShopingList.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ShopingList.Data.Models.ShopingList", b =>
+            modelBuilder.Entity("ShopingList.Data.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ShopingLists");
+                    b.HasDiscriminator().HasValue("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -437,19 +473,15 @@ namespace ShopingList.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProductShopingList", b =>
+            modelBuilder.Entity("ShopingList.Data.Models.GroceryList", b =>
                 {
-                    b.HasOne("ShopingList.Data.Models.Product", null)
+                    b.HasOne("ShopingList.Data.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("ProductListId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShopingList.Data.Models.ShopingList", null)
-                        .WithMany()
-                        .HasForeignKey("ShopingListsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ShopingList.Data.Models.Product", b =>
@@ -461,6 +493,35 @@ namespace ShopingList.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("ShopingList.Data.Models.Product_GroceryList", b =>
+                {
+                    b.HasOne("ShopingList.Data.Models.GroceryList", "GroceriesList")
+                        .WithMany("Product_GroceryList")
+                        .HasForeignKey("GroceriesListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShopingList.Data.Models.Product", "Product")
+                        .WithMany("Product_GroceryList")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GroceriesList");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("ShopingList.Data.Models.GroceryList", b =>
+                {
+                    b.Navigation("Product_GroceryList");
+                });
+
+            modelBuilder.Entity("ShopingList.Data.Models.Product", b =>
+                {
+                    b.Navigation("Product_GroceryList");
                 });
 #pragma warning restore 612, 618
         }

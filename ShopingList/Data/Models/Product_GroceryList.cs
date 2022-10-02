@@ -15,8 +15,6 @@ namespace ShopingList.Data.Models
 
         public int GroceriesListId { get; set; }
 
-        public int Quantity { get; set; }
-
         public bool IsBought { get; set; }
     }
 }

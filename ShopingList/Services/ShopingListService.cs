@@ -12,7 +12,12 @@ namespace ShopingList.Services
 
         public async Task<ICollection<GroceryList>> GetAllGroceriesList(string userId)
         {
-            return await context.GroceryLists.Where(gl=>gl.UserId == userId).OrderByDescending(gl=>gl.TimeStamp).ToListAsync();
+            var groceriesList = await context.GroceryLists.Where(gl => gl.UserId == userId).OrderByDescending(gl => gl.TimeStamp).ToListAsync();
+            foreach (var gl in groceriesList)
+            {
+                gl.Product_GroceryList = await this.GetProductGroceryListByGLId(gl.Id);
+            }
+            return groceriesList;
         }
 
         public async Task<GroceryList> CreateGroceriesList(GroceryList groceriesList)
@@ -34,7 +39,9 @@ namespace ShopingList.Services
         {
             try
             {
-                return await context.GroceryLists.FirstOrDefaultAsync(groceries => groceries.Id == Id);
+                var groceryList = await context.GroceryLists.FirstOrDefaultAsync(groceries => groceries.Id == Id);
+                groceryList.Product_GroceryList = await this.GetProductGroceryListByGLId(Id);
+                return groceryList;
             }
             catch (Exception ex)
             {
@@ -70,17 +77,71 @@ namespace ShopingList.Services
             }
         }
 
-        public async Task AddProductToList(Product product, int shopingListId)
+        public async Task<List<Product_GroceryList>> GetProductGroceryListByGLId(int groceryListId)
         {
             try
             {
-                var gl = await context.GroceryLists.FirstAsync(x=>x.Id == shopingListId);
-                //gl.ProductList.Add(product);
+                return await context.Product_GroceryLists.Include(pgl => pgl.Product).ThenInclude(x => x.Category).Where(pgl => pgl.GroceriesListId == groceryListId).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<Product_GroceryList> InsertPrductGroceryList(Product_GroceryList productGroceryList) 
+        {
+            try
+            {
+                context.Product_GroceryLists.Add(productGroceryList);
+                await context.SaveChangesAsync();
+                return productGroceryList;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task UpdateProductCroceryList(Product_GroceryList productGroceryList) 
+        {
+            try
+            {
+                context.Product_GroceryLists.Update(productGroceryList);
                 await context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
 
+                throw;
+            }
+        }
+
+        public async Task DeleteProductCroceryList(Product_GroceryList productGroceryList)
+        {
+            try
+            {
+                context.Product_GroceryLists.Remove(productGroceryList);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<Product_GroceryList> GetProductGroceryListById(int productGroceryListId)
+        {
+            try
+            {
+                var productGroceryList = await context.Product_GroceryLists.Include(pgl => pgl.Product).Include(pgl => pgl.GroceriesList).FirstOrDefaultAsync(pgl => pgl.Id == productGroceryListId);
+                return productGroceryList;
+            }
+            catch (Exception ex)
+            {
                 throw;
             }
         }

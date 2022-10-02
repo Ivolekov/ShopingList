@@ -50,3 +50,29 @@ body {
     border-color: #17a2b8;
     font-weight: bold;
 }
+
+td {
+    position: relative;
+}
+
+tr.strikeout td:before {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    border-bottom: 1px solid tomato;
+    width: 100%;
+}
+
+tr.strikeout td:after {
+    content: "\00B7";
+    font-size: 1px;
+}
+
+td {
+    width: 100px;
+}
+
+th {
+    text-align: left;
+}

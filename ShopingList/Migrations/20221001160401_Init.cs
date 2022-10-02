@@ -256,7 +256,7 @@ namespace ShopingList.Migrations
                     { 1, 1, "Orange" },
                     { 2, 1, "Apple" },
                     { 3, 2, "Cuccumber" },
-                    { 4, 2, "Domato" },
+                    { 4, 2, "Tomato" },
                     { 5, 3, "Ice cream" },
                     { 6, 3, "Pizza" },
                     { 7, 4, "Beef" },

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using ShopingList.Data;
 using ShopingList.Data.Models;
 using ShopingList.Services;
@@ -27,7 +28,8 @@ builder.Services
     .AddScoped<ICategoryService, ProductService>()
     .AddScoped<IProductService, ProductService>()
     .AddScoped<IShopingListService, ShopingListService>()
-    .AddControllers();
+    .AddControllers()
+    .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
 var app = builder.Build();
 

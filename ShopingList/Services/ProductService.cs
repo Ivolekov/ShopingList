@@ -84,7 +84,7 @@ namespace ShopingList.Services
         {
             try
             {
-                return await context.Products.Where(x => x.Id == productId).FirstOrDefaultAsync();
+                return await context.Products.Include(p => p.Category).Where(x => x.Id == productId).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
@@ -96,7 +96,7 @@ namespace ShopingList.Services
         {
             try
             {
-                return await context.Products.Where(x => x.Name == productName).FirstOrDefaultAsync();
+                return await context.Products.Include(p => p.Category).Where(x => x.Name == productName).FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {

@@ -47,7 +47,7 @@ public class ShopingListDBContext : IdentityDbContext<IdentityUser>
                 new { Id = 1, Name = "Orange", CategoryId = 1 },
                 new { Id = 2, Name = "Apple", CategoryId = 1 },
                 new { Id = 3, Name = "Cuccumber", CategoryId = 2 },
-                new { Id = 4, Name = "Domato", CategoryId = 2 },
+                new { Id = 4, Name = "Tomato", CategoryId = 2 },
                 new { Id = 5, Name = "Ice cream", CategoryId = 3 },
                 new { Id = 6, Name = "Pizza", CategoryId = 3 },
                 new { Id = 7, Name = "Beef", CategoryId = 4 },

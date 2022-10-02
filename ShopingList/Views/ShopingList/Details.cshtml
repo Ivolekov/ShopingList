@@ -10,19 +10,40 @@
     <h4>Grocery List - @Html.DisplayFor(model => model.Title)</h4>
     <div class="my-2">
         <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-        <a asp-action="Index">Back to shoping lists</a>
+        <a asp-action="Index">Back to grocery lists</a>
     </div>
     <hr />
-    @using (Html.BeginForm("AddProduct", "ShopingList"))
-    {
-    <div class="ui-widget">
-            <label for="productName">Search Product: </label>
-            @Html.TextBox("productName")
-            @Html.Hidden("id")
-            <input class="btn btn-sm btn-success fw-bold" type="submit" value="Add"/>
-    </div> 
-    }
-    @await Html.PartialAsync("_GroceriesListProducts", @Model)
+    <div class="input-group mb ui-widget my-2">
+        <input type="text" id="productName" class="form-control" placeholder="Search For Product..." aria-label="Search For Product..." aria-describedby="basic-addon2">
+        <div class="input-group-append">
+            <button class="btn btn-outline-success" onclick="addProduct()" type="button">Add</button>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Category
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="products-table">
+            @foreach (var pgl in Model.Product_GroceryList.OrderByDescending(pgl=>pgl.Id))
+            {
+                var strikeOutClass = pgl.IsBought ? "strikeout" : "";
+                string productNameText = @pgl.Product.Name.ToLower().Replace(" ", String.Empty);
+                <tr id=@productNameText onclick="updatePGLRow(@pgl.Id, @productNameText)" class=@strikeOutClass>
+                    <td>@pgl.Product.Name</td>
+                    <td>@pgl.Product.Category.Name</td>
+                    <td><button class="btn btn-sm btn-danger" onclick="deletePGLRow(@pgl.Id, @productNameText)">Remove</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
 @section Scripts {
@@ -49,5 +70,83 @@
                 }
             });
         });
+
+        function addProduct() {
+            let inputValue = $('#productName').val().toLowerCase();
+            if (inputValue === '') {
+                return;
+            }
+            let idName = inputValue.replace(/ /g, '');
+            if ($('#' + idName).length) {
+                $('#' + idName).effect("highlight", { color: '#7E997D' }, 500);
+                return;
+            }
+
+            $.ajax({
+                url: "/ShopingList/AddProductToTable",
+                data: {
+                    "productName": inputValue, "groceryListId": @Model.Id },
+                type: "POST",
+                success: function (data) {
+                    var table = document.getElementById("products-table");
+                    var row = table.insertRow(0);
+                    var name = row.insertCell(0);
+                    var category = row.insertCell(1);
+                    var removeBtn = row.insertCell(2);
+                    name.innerHTML = data.product.name;
+                    category.innerHTML = data.product.category.name;
+                    $(row).attr('id', data.product.name.replace(/ /g, '').toLowerCase());
+                    $(row).attr('onclick', 'updatePGLRow(' + data.groceryListId + ', ' + data.product.name.toLowerCase().replace(/ /g, '') + ')');
+                    $(row).effect("highlight", { color: '#7E997D' }, 2500);
+                    removeBtn.innerHTML = '<button class="btn btn-sm btn-danger" onclick="deletePGLRow(' + data.groceryListId + ', ' + data.product.name.toLowerCase().replace(/ /g, '') + ')">Remove</button>';
+                },
+                error: function (res) {
+                    if (res.status == 404) {
+                        alert("The product " + inputValue + " don't exist!");
+                    } else {
+                        console.log(res);
+                    }
+                }
+            })
+        }
+
+        function updatePGLRow(pglId, productNameText) {
+            let name = productNameText.id;
+            //$('#'+name).find('.')
+   
+            $.ajax({
+                url: "/ShopingList/UpdateProductGroceryList",
+                data: { "producGroceryListId": pglId },
+                type: "POST",
+                success: function(res) {
+                    if (res) {
+                        $('#' + name).addClass('strikeout')
+                    } else {
+                        $('#' + name).removeClass('strikeout')
+                    }
+                },
+                error: function(res) {
+                    console.log(res);
+                }
+            })
+        }
+
+        function deletePGLRow(pglId, productNameText) {
+            let name = productNameText.id;
+ 
+            $.ajax({
+                url: "/ShopingList/DeleteProductGroceryList",
+                data: { "producGroceryListId": pglId },
+                type: "POST",
+                success: function () {
+                    $('#' + name).remove();
+                    return;
+                },
+                error: function (res) {
+                    console.log(res);
+                    return;
+                }
+            })
+        }
     </script>
 }

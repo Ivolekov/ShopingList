@@ -18,6 +18,6 @@ namespace ShopingList.Data.Models
 
         public DateTime TimeStamp { get; set; } = DateTime.Now;
 
-        public ICollection<Product_GroceryList> Product_GroceryList { get; set; }
+        public List<Product_GroceryList> Product_GroceryList { get; set; }
     }
 }

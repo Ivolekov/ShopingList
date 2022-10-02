@@ -300,7 +300,7 @@ namespace ShopingList.Migrations
                         {
                             Id = 4,
                             CategoryId = 2,
-                            Name = "Domato"
+                            Name = "Tomato"
                         },
                         new
                         {

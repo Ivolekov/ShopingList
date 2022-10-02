@@ -20,24 +20,30 @@
             <th>
                 Products
             </th>
+           <th>Items Remains</th>
            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+            <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                    @*@if (item.ProductList.Count == 0)
+                    @if (item.Product_GroceryList.Count == 0)
                     {
                        <p>No items</p>
-                    }else
+                    }
+                    else if (item.Product_GroceryList.Count == 1)
                     {
-                        <p>Products @item.ProductList.Count</p>
-                    }*@
+                        <p>@item.Product_GroceryList.Count item</p>
+                    } else 
+                    {
+                        <p>@item.Product_GroceryList.Count items</p>
+                    }
                 </td>
+                <td>@item.Product_GroceryList.Where(pgl => !pgl.IsBought).Count() remains</td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

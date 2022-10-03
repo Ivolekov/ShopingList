@@ -28,7 +28,18 @@ namespace ShopingList.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            var productList = await productService.GetAllProducts();
+            var productListRes = await productService.GetAllProducts();
+            var productList = new List<ProductVM>();
+            foreach (var p in productListRes)
+            {
+                ProductVM productVM = new ProductVM
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Category = p.Category.Name
+                };
+                productList.Add(productVM);
+            }            
             return View(productList);
         }
 
@@ -48,15 +59,14 @@ namespace ShopingList.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name, CategoryId")] ProductModel model)
         {
-            Product product = new Product
-            {
-                Name = model.Name,
-                CategoryId = model.CategoryId
-
-            };
-
             if (ModelState.IsValid)
             {
+                Product product = new Product
+                {
+                    Name = model.Name,
+                    CategoryId = model.CategoryId
+
+                };
                 await productService.CreateProduct(product);
                 return RedirectToAction(nameof(Index));
             }
@@ -64,7 +74,7 @@ namespace ShopingList.Controllers
             var listItems = categoryList.Select(u => new SelectListItem { Value = u.Id.ToString(), Text = u.Name }).ToList();
             listItems.Insert(0, new SelectListItem() { Value = "-1", Text = "Choose product category..." });
             ViewData["CategoryId"] = new SelectList(listItems, "Value", "Text");
-            return View(product);
+            return View(model);
         }
 
         // GET: Products/Edit/5
@@ -92,19 +102,17 @@ namespace ShopingList.Controllers
                 return NotFound();
             }
 
-            Product product = new Product
-            {
-                Id = model.Id,
-                Name = model.Name,
-                CategoryId = model.CategoryId
-
-            };
-
             if (ModelState.IsValid)
             {
                 try
                 {
+                    Product product = new Product
+                    {
+                        Id = model.Id,
+                        Name = model.Name,
+                        CategoryId = model.CategoryId
 
+                    };
                     await productService.UpdateProduct(product);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -116,7 +124,7 @@ namespace ShopingList.Controllers
 
             var categoryList = await categoryService.GetAllProductCategories();
             ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
-            return View(product);
+            return View(model);
         }
 
         // GET: Products/Delete/5

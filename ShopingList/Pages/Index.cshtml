@@ -1,10 +1,21 @@
 ﻿@page
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="text-center">
+        <h1 class="display-4">Welcome to the shoping list app.</h1>
+        <h1 class="display-4">You can find your shoping list in Home button.</h1>
+    </div>
+} else 
+{
+     <div class="text-center">
+        <h1 class="display-4">Welcome to the shoping list app.</h1>
+        <h1 class="display-4">Sigh in to use it.</h1>
+    </div>
+}
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using ShopingList.Data;
 using ShopingList.Data.Models;
@@ -8,10 +10,12 @@ using ShopingList.Services;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ShopingListDBContextConnection") ?? throw new InvalidOperationException("Connection string 'ShopingListDBContextConnection' not found.");
 
-builder.Services.AddDbContext<ShopingListDBContext>(options =>
-    options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ShopingListDBContext>(options => {
+    options.UseNpgsql(connectionString);
+});
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => 
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
     options.Password.RequiredLength = 6;
     options.Password.RequireDigit = false;
@@ -45,7 +49,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();;
+app.UseAuthentication(); ;
 
 app.UseAuthorization();
 

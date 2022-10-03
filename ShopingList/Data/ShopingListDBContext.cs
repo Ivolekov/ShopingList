@@ -20,8 +20,8 @@ public class ShopingListDBContext : IdentityDbContext<IdentityUser>
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        //builder.Entity<Product>()
-        //    .HasOne(p => p.Category);
+        builder.Entity<Product>()
+           .HasOne(p => p.Category).WithMany(x => x.Products).OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Product_GroceryList>()
                .HasOne(p => p.Product)

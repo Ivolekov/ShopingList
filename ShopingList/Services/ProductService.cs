@@ -71,7 +71,7 @@ namespace ShopingList.Services
         {
             try
             {
-                return await context.Products.Where(p => p.Name.Contains(prefix)).ToListAsync();
+                return await context.Products.Where(p => p.Name.ToLower().Contains(prefix.ToLower())).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -96,7 +96,8 @@ namespace ShopingList.Services
         {
             try
             {
-                return await context.Products.Include(p => p.Category).Where(x => x.Name == productName).FirstOrDefaultAsync();
+
+                return await context.Products.Include(p => p.Category).Where(x => x.Name.ToLower().Equals(productName.ToLower())).FirstOrDefaultAsync(); ;
             }
             catch (Exception ex)
             {

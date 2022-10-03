@@ -37,17 +37,18 @@ namespace ShopingList.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name")] ProductCategoryModel model)
         {
-            ProductCategory category = new ProductCategory 
-            {
-                Name = model.Name
-            };
-
             if (ModelState.IsValid)
             {
+                ProductCategory category = new ProductCategory
+                {
+                    Name = model.Name
+                };
+
                 await categoryService.CreateProductCategory(category);
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(model);
         }
 
         // GET: ProductCategories/Edit/5
@@ -58,8 +59,12 @@ namespace ShopingList.Controllers
             {
                 return NotFound();
             }
-
-            return View(category);
+            ProductCategoryModel pcModel = new ProductCategoryModel 
+            {
+                Id = id,
+                Name = category.Name
+            };
+            return View(pcModel);
         }
 
         // POST: ProductCategories/Edit/5
@@ -72,16 +77,15 @@ namespace ShopingList.Controllers
                 return NotFound();
             }
 
-            ProductCategory productCategory = new ProductCategory 
-            {
-                Id = model.Id,
-                Name = model.Name
-            };
-
             if (ModelState.IsValid)
             {
                 try
                 {
+                    ProductCategory productCategory = new ProductCategory
+                    {
+                        Id = model.Id,
+                        Name = model.Name
+                    };
                     await categoryService.UpdateProductCategory(productCategory);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -91,7 +95,7 @@ namespace ShopingList.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(productCategory);
+            return View(model);
         }
 
         // GET: ProductCategories/Delete/5

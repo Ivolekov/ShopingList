@@ -80,7 +80,7 @@ namespace ShopingList.Controllers
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var product = await productService.GetProductById(id);
+            Product product = await productService.GetProductById(id);
             if (product == null)
             {
                 return NotFound();
@@ -88,8 +88,14 @@ namespace ShopingList.Controllers
 
             var categoryList = await categoryService.GetAllProductCategories();
             ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
-
-            return View(product);
+            ProductVM productVM = new ProductVM
+            {
+                Id = product.Id,
+                Name = product.Name,
+                CategoryId = product.Category.Id,
+                Category = product.Category.Name
+            };
+            return View(productVM);
         }
 
         // POST: Products/Edit/5
@@ -157,7 +163,11 @@ namespace ShopingList.Controllers
         [HttpPost]
         public async Task<IActionResult> GetProductsList(string prefix) 
         {
-            var products = await productService.GetProductsByPrefix(prefix);
+            if (string.IsNullOrWhiteSpace(prefix))
+            {
+                return Json(null);
+            }
+            var products = await productService.GetProductsByPrefix(prefix.Trim());
             return Json(products);
         }
     }

@@ -1,19 +1,3 @@
-using FakeItEasy;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using ShopingList.Controllers;
-using ShopingList.Data.Models;
-using ShopingList.Models;
-using ShopingList.Services;
-using System.Collections.Generic;
-using System.Net;
-using System.Security.Claims;
-
 namespace ShopingListTest
 {
     public class ProductControllerTests

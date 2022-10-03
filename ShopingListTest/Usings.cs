@@ -1,3 +1,11 @@
 global using NUnit.Framework;
 global using FakeItEasy;
 global using ShopingList;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Mvc.Rendering;
+global using ShopingList.Controllers;
+global using ShopingList.Data.Models;
+global using ShopingList.Models;
+global using ShopingList.Services;
+global using System.Security.Claims;

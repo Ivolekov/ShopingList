@@ -203,7 +203,7 @@ namespace ShopingListTest
         public async Task Edit_ShouldReturn_Product_And_CategoriesList()
         {
             //Arrange
-            A.CallTo(() => productService.GetProductById(A<int>.Ignored)).Returns(A.Fake<Product>());
+            A.CallTo(() => productService.GetProductById(A<int>.Ignored)).Returns(new Product { Category = A.Fake<ProductCategory>() });
             A.CallTo(() => categoryService.GetAllProductCategories()).Returns(A.CollectionOfFake<ProductCategory>(5));
 
             //Act
@@ -382,7 +382,7 @@ namespace ShopingListTest
             A.CallTo(() => productService.GetProductsByPrefix(A<string>.Ignored)).Returns(A.CollectionOfFake<Product>(3));
 
             //Act
-            var response = productsController.GetProductsList(String.Empty);
+            var response = productsController.GetProductsList("Prefix");
             var actualResult = await response as JsonResult;
 
             //Assert
@@ -390,6 +390,21 @@ namespace ShopingListTest
             var list = actualResult.Value as List<Product>;
             Assert.IsNotNull(list);
             Assert.That(list.Count, Is.EqualTo(3));
+        }
+
+        [Test]
+        public async Task GetProductListByPrefix_ShouldReturn_JsonNull()
+        {
+            //Arrange
+            A.CallTo(() => productService.GetProductsByPrefix(A<string>.Ignored)).Returns(A.CollectionOfFake<Product>(3));
+
+            //Act
+            var response = productsController.GetProductsList(string.Empty);
+            var actualResult = await response as JsonResult;
+
+            //Assert
+            Assert.IsNotNull(actualResult);
+            Assert.IsNull(actualResult.Value);
         }
     }
 }

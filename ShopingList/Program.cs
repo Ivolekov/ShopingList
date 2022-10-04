@@ -22,6 +22,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
     options.Password.RequireNonAlphanumeric = false;
+    options.User.RequireUniqueEmail = false;
 })
     .AddEntityFrameworkStores<ShopingListDBContext>();
 
@@ -34,7 +35,10 @@ builder.Services
     .AddScoped<IShopingListService, ShopingListService>()
     .AddControllers()
     .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
-
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Login";
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -59,7 +63,7 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Login}/{action=Index}"
+        pattern: "{controller}/{action}"
     );
 });
 app.Seed();

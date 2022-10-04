@@ -1,8 +1,4 @@
-﻿using FakeItEasy;
-using ShopingList.Controllers;
-using ShopingList.Services;
-
-namespace ShopingListTest
+﻿namespace ShopingListTest
 {
     public class ProductCategoriesControllerTests
     {
@@ -99,7 +95,7 @@ namespace ShopingListTest
         }
 
         [Test]
-        public async Task Edit_ShouldReturn_NotFount()
+        public async Task Edit_ShouldReturn_NotFound()
         {
             //Arrange
             A.CallTo(() => categoryService.GetProductCategoryById(A<int>.Ignored)).Returns(new ProductCategory().Id == 0 ? null : new ProductCategory());
@@ -129,7 +125,7 @@ namespace ShopingListTest
         }
 
         [Test]
-        public async Task EditProductCategory_ShouldReturn_NotFount()
+        public async Task EditProductCategory_ShouldReturn_NotFound()
         {
             //Arrange
             var fakeProductCategory = A.Fake<ProductCategoryModel>();
@@ -170,7 +166,7 @@ namespace ShopingListTest
         }
 
         [Test]
-        public async Task Delete_ShouldReturn_NotFount()
+        public async Task Delete_ShouldReturn_NotFound()
         {
             //Arrange
             A.CallTo(() => categoryService.GetProductCategoryById(A<int>.Ignored)).Returns(new ProductCategory().Id == 0 ? null : new ProductCategory());

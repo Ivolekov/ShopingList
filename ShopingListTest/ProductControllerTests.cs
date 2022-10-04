@@ -185,7 +185,7 @@ namespace ShopingListTest
         }
 
         [Test]
-        public async Task Edit_ShouldReturn_NotFount() 
+        public async Task Edit_ShouldReturn_NotFound() 
         {
             //Arrange
             A.CallTo(() => productService.GetProductById(A<int>.Ignored)).Returns(new Product().Id == 0 ? null : new Product());
@@ -219,7 +219,7 @@ namespace ShopingListTest
         }
 
         [Test]
-        public async Task EditProduct_ShouldReturn_NotFount()
+        public async Task EditProduct_ShouldReturn_NotFound()
         {
             //Arrange
             var fakeProduct = A.Fake<ProductModel>();
@@ -327,7 +327,7 @@ namespace ShopingListTest
         }
 
         [Test]
-        public async Task Delete_ShouldReturn_NotFount()
+        public async Task Delete_ShouldReturn_NotFound()
         {
             //Arrange
             A.CallTo(() => productService.GetProductById(A<int>.Ignored)).Returns(new Product().Id == 0 ? null : new Product());

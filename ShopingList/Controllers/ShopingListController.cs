@@ -23,8 +23,19 @@ namespace ShopingList.Controllers
         // GET: ShopingListController
         public async Task<IActionResult> Index()
         {
-            var groceryList = await shopingListService.GetAllGroceriesList(this.User.GetId());
-            return View(groceryList);
+            var groceryLists = await shopingListService.GetAllGroceriesList(this.User.GetId());
+            var groceryListVM = new List<GroceryListVM>();
+            foreach (var groceryList in groceryLists)
+            {
+                GroceryListVM gLModel= new GroceryListVM 
+                {
+                    Id = groceryList.Id,
+                    Title = groceryList.Title,
+                    Product_GroceryList = groceryList.Product_GroceryList
+                };
+                groceryListVM.Add(gLModel);
+            }
+            return View(groceryListVM);
         }
 
         // GET: ShopingListController/Details/5
@@ -155,6 +166,10 @@ namespace ShopingList.Controllers
             var product = await productService.GetProductByName(productName);
             var groceryList = await shopingListService.GetGroceriesListById(groceryListId);
             if (product == null)
+            {
+                return NotFound();
+            }
+            if (groceryList == null)
             {
                 return NotFound();
             }

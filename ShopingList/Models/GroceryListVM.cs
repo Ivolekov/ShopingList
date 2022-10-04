@@ -5,12 +5,10 @@ namespace ShopingList.Models
 {
     public class GroceryListVM
     {
-        public GroceryListVM()
-        {
-            this.ProductList = new List<Product>();
-        }
+        public GroceryListVM() => this.Product_GroceryList = new List<Product_GroceryList>();
+        
         public int Id { get; set; }
         public string Title { get; set; }
-        public ICollection<Product> ProductList { get; set; }
+        public ICollection<Product_GroceryList> Product_GroceryList { get; set; }
     }
 }

@@ -8,6 +8,12 @@
 
 <h4>Edit Groceries List</h4>
 <hr />
+@if (TempData["AlertMsgEdit"] != null)
+{
+    <div class="alert alert-success">
+        <strong>Success!</strong> @TempData["AlertMsgEdit"]
+    </div>
+}
 <div class="row">
     <div class="col-md-6">
         <form asp-action="Edit">

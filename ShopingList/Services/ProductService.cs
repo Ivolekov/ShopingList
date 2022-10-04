@@ -174,5 +174,17 @@ namespace ShopingList.Services
                 throw;
             }
         }
+
+        public async Task<bool> CheckCategoryCanBeDeleted(int categoryId) 
+        {
+            try
+            {
+                return await context.Products.AnyAsync(p => p.CategoryId == categoryId);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

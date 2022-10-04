@@ -10,6 +10,18 @@
 <p>
     <a class="btn btn-success fw-bold" asp-action="Create">Create New Category</a>
 </p>
+@if (TempData["AlertMsg"] != null)
+{
+    <div class="alert alert-success">
+        <strong>Success!</strong> @TempData["AlertMsg"]
+    </div>
+}
+@if (TempData["AlertMsgError"] != null)
+{
+    <div class="alert alert-danger">
+        <strong>Error!</strong> @TempData["AlertMsgError"]
+    </div>
+}
 <table class="table" id="custom-table">
     <thead>
         <tr>

@@ -12,6 +12,12 @@
     <a class="btn btn-success fw-bold" asp-controller="Products" asp-action="Create">Create New Product</a>
     <a class="btn btn-info customBtn" asp-controller="ProductCategories" asp-action="Index">Manage Categories</a>
 </p>
+@if (TempData["AlertMsg"] != null) 
+{
+    <div class="alert alert-success">
+        <strong>Success!</strong> @TempData["AlertMsg"]
+    </div>
+}
 <table class="table" id="custom-table">
     <thead>
         <tr>

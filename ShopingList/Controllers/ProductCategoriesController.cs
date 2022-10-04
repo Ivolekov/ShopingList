@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.V5.Pages.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using ShopingList.Data;
 using ShopingList.Data.Models;
@@ -23,7 +25,7 @@ namespace ShopingList.Controllers
         // GET: ProductCategories
         public async Task<IActionResult> Index()
         {
-              return View(await categoryService.GetAllProductCategories());
+            return View(await categoryService.GetAllProductCategories());
         }
 
         // GET: ProductCategories/Create
@@ -45,7 +47,7 @@ namespace ShopingList.Controllers
                 };
 
                 await categoryService.CreateProductCategory(category);
-
+                TempData["AlertMsg"] = $"Category {category.Name} was added.";
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
@@ -59,7 +61,7 @@ namespace ShopingList.Controllers
             {
                 return NotFound();
             }
-            ProductCategoryModel pcModel = new ProductCategoryModel 
+            ProductCategoryModel pcModel = new ProductCategoryModel
             {
                 Id = id,
                 Name = category.Name
@@ -87,6 +89,7 @@ namespace ShopingList.Controllers
                         Name = model.Name
                     };
                     await categoryService.UpdateProductCategory(productCategory);
+                    TempData["AlertMsg"] = $"Category {productCategory.Name} was edeted.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -116,11 +119,17 @@ namespace ShopingList.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var productCategory = await categoryService.GetProductCategoryById(id);
+            
+            if (await categoryService.CheckCategoryCanBeDeleted(id))
+            {
+                TempData["AlertMsgError"] = $"Тhe category cannot be deleted. There are some products with this category.";
+                return RedirectToAction(nameof(Index));
+            }
             if (productCategory != null)
             {
                 await categoryService.DeleteProductCategory(productCategory);
             }
-            
+            TempData["AlertMsg"] = $"Category {productCategory.Name} was deleted.";
             return RedirectToAction(nameof(Index));
         }
 

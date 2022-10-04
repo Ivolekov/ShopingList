@@ -75,6 +75,7 @@ namespace ShopingList.Controllers
                     UserId = this.User.GetId()
                 };
                 await shopingListService.CreateGroceriesList(groceriesList);
+                TempData["AlertMsg"] = $"Shoping list  {groceriesList.Title} was created.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -121,6 +122,7 @@ namespace ShopingList.Controllers
 
                 groceryList.Title = model.Title;
                 await shopingListService.UpdateGroceriesList(groceryList);
+                TempData["AlertMsgEdit"] = $"Shoping list {groceryList.Title} was edited.";
                 return View(groceryList);
             }
 
@@ -149,14 +151,19 @@ namespace ShopingList.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var groceryList = await shopingListService.GetGroceriesListById(id);
+
+            if (groceryList == null)
+            {
+                return NotFound();
+            }
             if (groceryList.UserId != this.User.GetId())
             {
                 return Unauthorized();
             }
-            if (groceryList != null)
-            {
-                await shopingListService.DeleteGroceriesList(groceryList);
-            }
+
+            await shopingListService.DeleteGroceriesList(groceryList);
+            TempData["AlertMsg"] = $"Shoping list  {groceryList.Title} was deleted.";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -200,7 +207,11 @@ namespace ShopingList.Controllers
                 return NotFound();
             }
             productGL.IsBought = !productGL.IsBought;
+
             await shopingListService.UpdateProductCroceryList(productGL);
+            string markUnmark = productGL.IsBought ? "marked" : "unmarked"; 
+            TempData["AlertMsgRow"] = $"Product {productGL.Product.Name} was {markUnmark}.";
+
             return Ok(productGL.IsBought);
         }
 
@@ -208,11 +219,15 @@ namespace ShopingList.Controllers
         public async Task<IActionResult> DeleteProductGroceryList(int producGroceryListId)
         {
             var productGL = await shopingListService.GetProductGroceryListById(producGroceryListId);
+
             if (productGL == null)
             {
                 return NotFound();
             }
+
             await shopingListService.DeleteProductCroceryList(productGL);
+            TempData["AlertMsgRow"] = $"Product {productGL.Product.Name} was removed.";
+
             return Ok();
         }
     }

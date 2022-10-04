@@ -111,9 +111,7 @@
         }
 
         function updatePGLRow(pglId, productNameText) {
-            let name = productNameText.id;
-            //$('#'+name).find('.')
-   
+            let name = productNameText.id;   
             $.ajax({
                 url: "/ShopingList/UpdateProductGroceryList",
                 data: { "producGroceryListId": pglId },

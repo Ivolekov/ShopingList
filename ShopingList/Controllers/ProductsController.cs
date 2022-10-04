@@ -68,6 +68,7 @@ namespace ShopingList.Controllers
 
                 };
                 await productService.CreateProduct(product);
+                TempData["AlertMsg"] = $"Product {product.Name} was added.";
                 return RedirectToAction(nameof(Index));
             }
             var categoryList = await categoryService.GetAllProductCategories();
@@ -120,6 +121,7 @@ namespace ShopingList.Controllers
 
                     };
                     await productService.UpdateProduct(product);
+                    TempData["AlertMsg"] = $"Product {product.Name} was edited.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -156,6 +158,7 @@ namespace ShopingList.Controllers
             if (product != null)
             {
                 await productService.DeleteProduct(product);
+                TempData["AlertMsg"] = $"Product {product.Name} was deleted.";
             }
             return RedirectToAction(nameof(Index));
         }

@@ -116,8 +116,8 @@ namespace ShopingListTest
             Assert.That(selectedList.Count, Is.EqualTo(6));
             Assert.IsNotNull(actualResult.ViewData);
             Assert.IsNotNull(actualResult.ViewData.ModelState[modelStateErrorKey]);
-            var erorrsCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
-            Assert.That(erorrsCount, Is.EqualTo(1));
+            var errorsCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
+            Assert.That(errorsCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -146,10 +146,10 @@ namespace ShopingListTest
             Assert.That(selectedList.Count, Is.EqualTo(6));
             Assert.IsNotNull(actualResult.ViewData);
             Assert.IsNotNull(actualResult.ViewData.ModelState[modelStateErrorKey]);
-            var erorrCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
-            var erorrMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
-            Assert.That(erorrMsg, Is.EqualTo("The product name should be less than 100 symbols!"));
-            Assert.That(erorrCount, Is.EqualTo(1));
+            var errorCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
+            var errorMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
+            Assert.That(errorMsg, Is.EqualTo("The product name should be less than 100 symbols!"));
+            Assert.That(errorCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -178,10 +178,10 @@ namespace ShopingListTest
             Assert.That(selectedList.Count, Is.EqualTo(6));
             Assert.IsNotNull(actualResult.ViewData);
             Assert.IsNotNull(actualResult.ViewData.ModelState[modelStateErrorKey]);
-            var erorrCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
-            var erorrMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
-            Assert.That(erorrMsg, Is.EqualTo("Please choose product category!"));
-            Assert.That(erorrCount, Is.EqualTo(1));
+            var errorCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
+            var errorMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
+            Assert.That(errorMsg, Is.EqualTo("Please choose product category!"));
+            Assert.That(errorCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -258,8 +258,8 @@ namespace ShopingListTest
             Assert.That(selectedList.Count, Is.EqualTo(5));
             Assert.IsNotNull(actualResult.ViewData);
             Assert.IsNotNull(actualResult.ViewData.ModelState[modelStateErrorKey]);
-            var erorrsCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
-            Assert.That(erorrsCount, Is.EqualTo(1));
+            var errorsCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
+            Assert.That(errorsCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -288,10 +288,10 @@ namespace ShopingListTest
             Assert.That(selectedList.Count, Is.EqualTo(5));
             Assert.IsNotNull(actualResult.ViewData);
             Assert.IsNotNull(actualResult.ViewData.ModelState[modelStateErrorKey]);
-            var erorrCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
-            var erorrMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
-            Assert.That(erorrMsg, Is.EqualTo("Please choose product category!"));
-            Assert.That(erorrCount, Is.EqualTo(1));
+            var errorsCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
+            var errorMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
+            Assert.That(errorMsg, Is.EqualTo("Please choose product category!"));
+            Assert.That(errorsCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -320,10 +320,10 @@ namespace ShopingListTest
             Assert.That(selectedList.Count, Is.EqualTo(5));
             Assert.IsNotNull(actualResult.ViewData);
             Assert.IsNotNull(actualResult.ViewData.ModelState[modelStateErrorKey]);
-            var erorrCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
-            var erorrMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
-            Assert.That(erorrMsg, Is.EqualTo("The product name should be less than 100 symbols!"));
-            Assert.That(erorrCount, Is.EqualTo(1));
+            var errorCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
+            var errorMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
+            Assert.That(errorMsg, Is.EqualTo("The product name should be less than 100 symbols!"));
+            Assert.That(errorCount, Is.EqualTo(1));
         }
 
         [Test]

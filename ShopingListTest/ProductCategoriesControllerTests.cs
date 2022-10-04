@@ -88,10 +88,10 @@
             Assert.IsNotNull(actualResult);
             Assert.IsNotNull(actualResult.ViewData);
             Assert.IsNotNull(actualResult.ViewData.ModelState[modelStateErrorKey]);
-            var erorrsCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
-            var erorrMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
-            Assert.That(erorrsCount, Is.EqualTo(1));
-            Assert.That(erorrMsg, Is.EqualTo("Name is required."));
+            var errorsCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
+            var errorMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
+            Assert.That(errorsCount, Is.EqualTo(1));
+            Assert.That(errorMsg, Is.EqualTo("Name is required."));
         }
 
         [Test]
@@ -161,8 +161,8 @@
             Assert.IsNotNull(actualResult);
             Assert.IsNotNull(actualResult.ViewData);
             Assert.IsNotNull(actualResult.ViewData.ModelState[modelStateErrorKey]);
-            var erorrsCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
-            Assert.That(erorrsCount, Is.EqualTo(1));
+            var errorsCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
+            Assert.That(errorsCount, Is.EqualTo(1));
         }
 
         [Test]

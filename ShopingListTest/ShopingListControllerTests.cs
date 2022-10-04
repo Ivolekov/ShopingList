@@ -90,10 +90,10 @@
             Assert.IsNotNull(actualResult);
             Assert.IsNotNull(actualResult.ViewData);
             Assert.IsNotNull(actualResult.ViewData.ModelState[modelStateErrorKey]);
-            var erorrsCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
-            var erorrMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
-            Assert.That(erorrsCount, Is.EqualTo(1));
-            Assert.That(erorrMsg, Is.EqualTo("The groceries list title should be less than 100 symbols!"));
+            var errorsCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
+            var errorMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
+            Assert.That(errorsCount, Is.EqualTo(1));
+            Assert.That(errorMsg, Is.EqualTo("The groceries list title should be less than 100 symbols!"));
         }
 
         [Test]
@@ -192,10 +192,10 @@
             Assert.IsNotNull(actualResult);
             Assert.IsNotNull(actualResult.ViewData);
             Assert.IsNotNull(actualResult.ViewData.ModelState[modelStateErrorKey]);
-            var erorrsCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
-            var erorrMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
-            Assert.That(erorrsCount, Is.EqualTo(1));
-            Assert.That(erorrMsg, Is.EqualTo("Title is required."));
+            var errorsCount = actualResult.ViewData.ModelState[modelStateErrorKey].Errors.Count;
+            var errorMsg = actualResult.ViewData.ModelState[modelStateErrorKey].Errors[0].ErrorMessage;
+            Assert.That(errorsCount, Is.EqualTo(1));
+            Assert.That(errorMsg, Is.EqualTo("Title is required."));
         }
 
         [Test]

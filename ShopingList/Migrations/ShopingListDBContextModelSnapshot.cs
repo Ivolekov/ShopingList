@@ -274,68 +274,6 @@ namespace ShopingList.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CategoryId = 1,
-                            Name = "Orange"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CategoryId = 1,
-                            Name = "Apple"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CategoryId = 2,
-                            Name = "Cuccumber"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CategoryId = 2,
-                            Name = "Tomato"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CategoryId = 3,
-                            Name = "Ice cream"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CategoryId = 3,
-                            Name = "Pizza"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CategoryId = 4,
-                            Name = "Beef"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CategoryId = 4,
-                            Name = "Pork"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CategoryId = 5,
-                            Name = "Soda"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CategoryId = 5,
-                            Name = "Beer"
-                        });
                 });
 
             modelBuilder.Entity("ShopingList.Data.Models.Product_GroceryList", b =>
@@ -379,33 +317,6 @@ namespace ShopingList.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProductCategories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Fruits"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Vegetables"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Frozen Foods"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Meat"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Beverages"
-                        });
                 });
 
             modelBuilder.Entity("ShopingList.Data.Models.User", b =>

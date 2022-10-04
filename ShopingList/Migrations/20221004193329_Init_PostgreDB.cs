@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ShopingList.Migrations
 {
-    public partial class Init_Postgre : Migration
+    public partial class Init_PostgreDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -235,35 +235,6 @@ namespace ShopingList.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "ProductCategories",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Fruits" },
-                    { 2, "Vegetables" },
-                    { 3, "Frozen Foods" },
-                    { 4, "Meat" },
-                    { 5, "Beverages" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Products",
-                columns: new[] { "Id", "CategoryId", "Name" },
-                values: new object[,]
-                {
-                    { 1, 1, "Orange" },
-                    { 2, 1, "Apple" },
-                    { 3, 2, "Cuccumber" },
-                    { 4, 2, "Tomato" },
-                    { 5, 3, "Ice cream" },
-                    { 6, 3, "Pizza" },
-                    { 7, 4, "Beef" },
-                    { 8, 4, "Pork" },
-                    { 9, 5, "Soda" },
-                    { 10, 5, "Beer" }
                 });
 
             migrationBuilder.CreateIndex(

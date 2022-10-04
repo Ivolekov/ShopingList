@@ -62,5 +62,5 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Login}/{action=Index}"
     );
 });
-
+app.Seed();
 app.Run();

@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using ShopingList.Controllers;
+
 namespace ShopingListTest
 {
     public class ProductControllerTests
@@ -81,7 +84,7 @@ namespace ShopingListTest
         {
             //Arrange
             var product = A.Fake<ProductModel>();
-
+            productsController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
             //Act
             var response = productsController.Create(product);
             var actualResult = await response as RedirectToActionResult;
@@ -104,7 +107,7 @@ namespace ShopingListTest
 
             string modelStateErrorKey = "Name";
             productsController.ModelState.AddModelError(modelStateErrorKey, "Name is required.");
-
+           
             //Act
             var response = productsController.Create(product);
             var actualResult = await response as ViewResult;
@@ -365,6 +368,7 @@ namespace ShopingListTest
         {
             //Arrange
             A.CallTo(() => productService.GetProductById(A<int>.Ignored)).Returns(A.Fake<Product>());
+            productsController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
 
             //Act
             var response = productsController.DeleteConfirmed(1);

@@ -1,4 +1,7 @@
-﻿namespace ShopingListTest
+﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using ShopingList.Controllers;
+
+namespace ShopingListTest
 {
     public class ShopingListControllerTests
     {
@@ -60,6 +63,7 @@
         {
             //Arrange
             var fakeGroceryList = A.Fake<GroceriesListModel>();
+            shopingListController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
 
             //Act
             var response = shopingListController.Create(fakeGroceryList);
@@ -207,6 +211,7 @@
             {
                 Id = 1
             };
+            shopingListController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
 
             //Act
             var response = shopingListController.Edit(1, griceryList);
@@ -292,6 +297,7 @@
         {
             //Arrange
             A.CallTo(() => shopingListService.GetGroceriesListById(A<int>.Ignored)).Returns(new GroceryList { Id = 1, UserId = "1" });
+            shopingListController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
 
             //Act
             var response = shopingListController.DeleteConfirmed(1);
@@ -372,6 +378,7 @@
             A.CallTo(() => shopingListService.GetProductGroceryListById(A<int>.Ignored)).Returns(A.Fake<Product_GroceryList>());
             var fakeProductGL = A.Fake<Product_GroceryList>();
             A.CallTo(() => shopingListService.UpdateProductCroceryList(fakeProductGL));
+            shopingListController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
 
             //Act
             var response = shopingListController.UpdateProductGroceryList(0);
@@ -406,6 +413,7 @@
             A.CallTo(() => shopingListService.GetProductGroceryListById(A<int>.Ignored)).Returns(A.Fake<Product_GroceryList>());
             var fakeProductGL = A.Fake<Product_GroceryList>();
             A.CallTo(() => shopingListService.DeleteProductCroceryList(fakeProductGL));
+            shopingListController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
 
             //Act
             var response = shopingListController.DeleteProductGroceryList(0);

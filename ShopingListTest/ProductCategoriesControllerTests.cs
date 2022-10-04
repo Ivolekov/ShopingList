@@ -1,4 +1,7 @@
-﻿namespace ShopingListTest
+﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using ShopingList.Controllers;
+
+namespace ShopingListTest
 {
     public class ProductCategoriesControllerTests
     {
@@ -58,6 +61,7 @@
         {
             //Arrange
             var fakeCategory = A.Fake<ProductCategoryModel>();
+            productsCategoriesController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
 
             //Act
             var response = productsCategoriesController.Create(fakeCategory);
@@ -200,6 +204,7 @@
         {
             //Arrange
             A.CallTo(() => categoryService.GetProductCategoryById(A<int>.Ignored)).Returns(A.Fake<ProductCategory>());
+            productsCategoriesController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
 
             //Act
             var response = productsCategoriesController.DeleteConfirmed(1);

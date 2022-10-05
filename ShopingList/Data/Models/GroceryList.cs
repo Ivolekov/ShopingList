@@ -1,5 +1,4 @@
-﻿using ShopingList.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ShopingList.Data.Models
 {

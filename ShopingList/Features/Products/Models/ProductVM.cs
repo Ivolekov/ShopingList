@@ -1,6 +1,6 @@
 ﻿using ShopingList.Data.Models;
 
-namespace ShopingList.Models
+namespace ShopingList.Features.Products.Models
 {
     public class ProductVM
     {

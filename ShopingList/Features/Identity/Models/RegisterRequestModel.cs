@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ShopingList.Models
+namespace ShopingList.Features.Identity.Models
 {
     public class RegisterRequestModel
     {

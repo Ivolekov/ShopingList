@@ -10,10 +10,10 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using ShopingList.Data;
 using ShopingList.Data.Models;
-using ShopingList.Models;
-using ShopingList.Services;
+using ShopingList.Features.Products.Models;
+using ShopingList.Features.Products.Services;
 
-namespace ShopingList.Controllers
+namespace ShopingList.Features.Products
 {
     [Authorize]
     public class ProductCategoriesController : Controller
@@ -59,7 +59,7 @@ namespace ShopingList.Controllers
             var category = await categoryService.GetProductCategoryById(id);
             if (category == null || id != category.Id)
             {
-                return NotFound();
+                return NotFound($"Category do not exists. ID: {id}");
             }
             ProductCategoryModel pcModel = new ProductCategoryModel
             {
@@ -76,7 +76,7 @@ namespace ShopingList.Controllers
         {
             if (id != model.Id)
             {
-                return NotFound();
+                return NotFound($"Category do not exists. ID: {id}");
             }
 
             if (ModelState.IsValid)
@@ -107,7 +107,7 @@ namespace ShopingList.Controllers
             var productCategory = await categoryService.GetProductCategoryById(id);
             if (productCategory == null)
             {
-                return NotFound();
+                return NotFound($"Category do not exists. ID: {id}");
             }
 
             return View(productCategory);
@@ -119,7 +119,7 @@ namespace ShopingList.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var productCategory = await categoryService.GetProductCategoryById(id);
-            
+
             if (await categoryService.CheckCategoryCanBeDeleted(id))
             {
                 TempData["AlertMsgError"] = $"Тhe category cannot be deleted. There are some products with this category.";

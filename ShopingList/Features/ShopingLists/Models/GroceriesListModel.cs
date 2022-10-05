@@ -1,7 +1,7 @@
 ﻿using ShopingList.Data.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace ShopingList.Models
+namespace ShopingList.Features.ShopingLists.Models
 {
     public class GroceriesListModel
     {

@@ -1,4 +1,5 @@
-﻿@model ShopingList.Data.Models.GroceryList
+﻿@using ShopingList.Features.ShopingLists.Models
+@model GroceriesListModel
 
 @{
     ViewData["Title"] = "Create";
@@ -17,7 +18,6 @@
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-            @*<input id="today" type="checkbox" name="today" onclick='fillTheTiitle(this);' /><label for="today">Add today date in the title</label>*@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn my-3 btn-primary" />
             </div>

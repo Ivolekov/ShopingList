@@ -5,7 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using ShopingList.Data;
 using ShopingList.Data.Models;
-using ShopingList.Services;
+using ShopingList.Features.Products;
+using ShopingList.Features.Products.Services;
+using ShopingList.Features.ShopingLists;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ShopingListDBContextConnection") ?? throw new InvalidOperationException("Connection string 'ShopingListDBContextConnection' not found.");

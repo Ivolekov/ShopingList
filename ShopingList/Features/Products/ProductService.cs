@@ -2,8 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using ShopingList.Data;
 using ShopingList.Data.Models;
+using ShopingList.Features.Products.Services;
 
-namespace ShopingList.Services
+namespace ShopingList.Features.Products
 {
     public class ProductService : IProductService, ICategoryService
     {
@@ -175,7 +176,7 @@ namespace ShopingList.Services
             }
         }
 
-        public async Task<bool> CheckCategoryCanBeDeleted(int categoryId) 
+        public async Task<bool> CheckCategoryCanBeDeleted(int categoryId)
         {
             try
             {

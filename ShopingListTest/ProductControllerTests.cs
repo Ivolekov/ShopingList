@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using ShopingList.Controllers;
+using ShopingList.Features.Products;
+using ShopingList.Features.Products.Models;
+using ShopingList.Features.Products.Services;
 
 namespace ShopingListTest
 {

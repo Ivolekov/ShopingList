@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ShopingList.Data;
 using ShopingList.Data.Models;
-using ShopingList.Models;
-using ShopingList.Services;
+using ShopingList.Features.Products.Models;
+using ShopingList.Features.Products.Services;
 
-namespace ShopingList.Controllers
+namespace ShopingList.Features.Products
 {
     [Authorize]
     public class ProductsController : Controller
@@ -39,13 +39,13 @@ namespace ShopingList.Controllers
                     Category = p.Category.Name
                 };
                 productList.Add(productVM);
-            }            
+            }
             return View(productList);
         }
 
         // GET: Products/Create
         public async Task<IActionResult> Create()
-        { 
+        {
             var categoryList = await categoryService.GetAllProductCategories();
             var listItems = categoryList.Select(u => new SelectListItem { Value = u.Id.ToString(), Text = u.Name }).ToList();
             listItems.Insert(0, new SelectListItem() { Value = "-1", Text = "Choose product category..." });
@@ -84,7 +84,7 @@ namespace ShopingList.Controllers
             Product product = await productService.GetProductById(id);
             if (product == null)
             {
-                return NotFound();
+                return NotFound($"Product do not exists. ID: {id}");
             }
 
             var categoryList = await categoryService.GetAllProductCategories();
@@ -106,7 +106,7 @@ namespace ShopingList.Controllers
         {
             if (id != model.Id)
             {
-                return NotFound();
+                return NotFound($"Product do not exists. ID: {id}");
             }
 
             if (ModelState.IsValid)
@@ -142,7 +142,7 @@ namespace ShopingList.Controllers
             var product = await productService.GetProductById(id);
             if (product == null)
             {
-                return NotFound();
+                return NotFound($"Product do not exists. ID: {id}");
             }
             var categoryList = await categoryService.GetAllProductCategories();
             ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
@@ -164,7 +164,7 @@ namespace ShopingList.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetProductsList(string prefix) 
+        public async Task<IActionResult> GetProductsList(string prefix)
         {
             if (string.IsNullOrWhiteSpace(prefix))
             {

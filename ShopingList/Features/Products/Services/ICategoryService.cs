@@ -1,6 +1,6 @@
 ﻿using ShopingList.Data.Models;
 
-namespace ShopingList.Services
+namespace ShopingList.Features.Products.Services
 {
     public interface ICategoryService
     {

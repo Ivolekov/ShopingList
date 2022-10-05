@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShopingList.Data.Models;
 using ShopingList.Extentions;
-using ShopingList.Models;
-using ShopingList.Services;
+using ShopingList.Features.Products.Services;
+using ShopingList.Features.ShopingLists.Models;
 
-namespace ShopingList.Controllers
+namespace ShopingList.Features.ShopingLists
 {
     [Authorize]
     public class ShopingListController : Controller
@@ -16,18 +16,18 @@ namespace ShopingList.Controllers
 
         public ShopingListController(IShopingListService shopingListService, IProductService productService)
         {
-            this.shopingListService = shopingListService; 
+            this.shopingListService = shopingListService;
             this.productService = productService;
         }
 
         // GET: ShopingListController
         public async Task<IActionResult> Index()
         {
-            var groceryLists = await shopingListService.GetAllGroceriesList(this.User.GetId());
+            var groceryLists = await shopingListService.GetAllGroceriesList(User.GetId());
             var groceryListVM = new List<GroceryListVM>();
             foreach (var groceryList in groceryLists)
             {
-                GroceryListVM gLModel= new GroceryListVM 
+                GroceryListVM gLModel = new GroceryListVM
                 {
                     Id = groceryList.Id,
                     Title = groceryList.Title,
@@ -45,15 +45,21 @@ namespace ShopingList.Controllers
 
             if (groceryList == null)
             {
-                return NotFound();
+                return NotFound($"Shoping list do not exists. ID: {id}");
             }
 
-            if (groceryList.UserId != this.User.GetId())
+            if (groceryList.UserId != User.GetId())
             {
-                return Unauthorized(); 
+                return Unauthorized($"You are not authorize for this operation.");
             }
+            GroceryListVM model = new GroceryListVM 
+            {
+                Id = groceryList.Id,
+                Title = groceryList.Title,
+                Product_GroceryList = await shopingListService.GetProductGroceryListByGLId(id)
+            };
 
-            return View(groceryList);
+            return View(model);
         }
 
         // GET: ShopingListController/Create
@@ -72,7 +78,7 @@ namespace ShopingList.Controllers
                 var groceriesList = new GroceryList
                 {
                     Title = model.Title,
-                    UserId = this.User.GetId()
+                    UserId = User.GetId()
                 };
                 await shopingListService.CreateGroceriesList(groceriesList);
                 TempData["AlertMsg"] = $"Shoping list  {groceriesList.Title} was created.";
@@ -90,15 +96,20 @@ namespace ShopingList.Controllers
 
             if (groceryList == null)
             {
-                return NotFound();
+                return NotFound($"Shoping list do not exists. ID: {id}");
             }
 
-            if (groceryList.UserId != this.User.GetId())
+            if (groceryList.UserId != User.GetId())
             {
-                return Unauthorized();
+                return Unauthorized("You are not authorize for this operation.");
             }
+            GroceriesListModel model = new GroceriesListModel 
+            {
+                Id = groceryList.Id,
+                Title = groceryList.Title
+            };
 
-            return View(groceryList);
+            return View(model);
         }
 
         // POST: ShopingListController/Edit/5
@@ -108,22 +119,21 @@ namespace ShopingList.Controllers
         {
             if (id != model.Id)
             {
-                return NotFound();
+                return NotFound($"Shoping list do not exists. ID: {id}");
             }
 
             if (ModelState.IsValid)
             {
                 GroceryList groceryList = await shopingListService.GetGroceriesListById(id);
 
-                if (groceryList.UserId != this.User.GetId())
+                if (groceryList.UserId != User.GetId())
                 {
-                    return Unauthorized();
+                    return Unauthorized("You are not authorize for this operation.");
                 }
 
                 groceryList.Title = model.Title;
                 await shopingListService.UpdateGroceriesList(groceryList);
                 TempData["AlertMsgEdit"] = $"Shoping list {groceryList.Title} was edited.";
-                return View(groceryList);
             }
 
             return View(model);
@@ -136,13 +146,20 @@ namespace ShopingList.Controllers
 
             if (groceryList == null)
             {
-                return NotFound();
+                return NotFound($"Shoping list do not exists. ID: {id}");
             }
-            if (groceryList.UserId != this.User.GetId())
+            if (groceryList.UserId != User.GetId())
             {
-                return Unauthorized();
+                return Unauthorized("You are not authorize for this operation.");
             }
-            return View(groceryList);
+
+            GroceriesListModel model = new GroceriesListModel 
+            {
+                Id = groceryList.Id,
+                Title = groceryList.Title
+            };
+
+            return View(model);
         }
 
         // POST: ShopingListController/Delete/5
@@ -154,11 +171,11 @@ namespace ShopingList.Controllers
 
             if (groceryList == null)
             {
-                return NotFound();
+                return NotFound($"Shoping list do not exists. ID: {id}");
             }
-            if (groceryList.UserId != this.User.GetId())
+            if (groceryList.UserId != User.GetId())
             {
-                return Unauthorized();
+                return Unauthorized("You are not authorize for this operation.");
             }
 
             await shopingListService.DeleteGroceriesList(groceryList);
@@ -168,19 +185,19 @@ namespace ShopingList.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddProductToTable(string productName, int groceryListId) 
+        public async Task<IActionResult> AddProductToTable(string productName, int groceryListId)
         {
             var product = await productService.GetProductByName(productName);
             var groceryList = await shopingListService.GetGroceriesListById(groceryListId);
             if (product == null)
             {
-                return NotFound();
+                return NotFound($"Product {productName} do not exists.");
             }
             if (groceryList == null)
             {
-                return NotFound();
+                return NotFound($"Shoping list do not exists. ID: {groceryListId}");
             }
-            Product_GroceryList productGroceryList = new Product_GroceryList 
+            Product_GroceryList productGroceryList = new Product_GroceryList
             {
                 ProductId = product.Id,
                 GroceriesListId = groceryList.Id,
@@ -189,7 +206,7 @@ namespace ShopingList.Controllers
             };
             var productGroceryListRes = await shopingListService.InsertPrductGroceryList(productGroceryList);
 
-            Product_GroceryListVM pglVM = new Product_GroceryListVM 
+            Product_GroceryListVM pglVM = new Product_GroceryListVM
             {
                 GroceryListId = productGroceryListRes.Id,
                 Product = productGroceryListRes.Product
@@ -199,17 +216,17 @@ namespace ShopingList.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateProductGroceryList(int producGroceryListId) 
+        public async Task<IActionResult> UpdateProductGroceryList(int producGroceryListId)
         {
             var productGL = await shopingListService.GetProductGroceryListById(producGroceryListId);
             if (productGL == null)
             {
-                return NotFound();
+                return NotFound($"There is not such product in shoping list do not exists. ID: {producGroceryListId}");
             }
             productGL.IsBought = !productGL.IsBought;
 
             await shopingListService.UpdateProductCroceryList(productGL);
-            string markUnmark = productGL.IsBought ? "marked" : "unmarked"; 
+            string markUnmark = productGL.IsBought ? "marked" : "unmarked";
             TempData["AlertMsgRow"] = $"Product {productGL.Product.Name} was {markUnmark}.";
 
             return Ok(productGL.IsBought);
@@ -222,7 +239,7 @@ namespace ShopingList.Controllers
 
             if (productGL == null)
             {
-                return NotFound();
+                return NotFound($"There is not such product in shoping list do not exists. ID: {producGroceryListId}");
             }
 
             await shopingListService.DeleteProductCroceryList(productGL);

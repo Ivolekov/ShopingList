@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 using Microsoft.AspNetCore.Mvc;
 using ShopingList.Data.Models;
-using ShopingList.Models;
+using ShopingList.Features.Identity.Models;
 
-namespace ShopingList.Controllers
+namespace ShopingList.Features.Identity
 {
     public class IdentityController : Controller
     {
@@ -17,7 +17,7 @@ namespace ShopingList.Controllers
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
-            this.userStore = userStore; 
+            this.userStore = userStore;
         }
         [Route("Login")]
         public IActionResult Login()
@@ -44,7 +44,6 @@ namespace ShopingList.Controllers
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View();
                 }
             }
 
@@ -55,7 +54,7 @@ namespace ShopingList.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register([Bind("Username, Password, ConfirmPassword")] RegisterRequestModel registerModel)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 var user = Activator.CreateInstance<IdentityUser>();
 
@@ -73,7 +72,7 @@ namespace ShopingList.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-            
+
             return View();
         }
 

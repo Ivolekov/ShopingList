@@ -2,7 +2,7 @@
 using ShopingList.Data;
 using ShopingList.Data.Models;
 
-namespace ShopingList.Services
+namespace ShopingList.Features.ShopingLists
 {
     public class ShopingListService : IShopingListService
     {
@@ -15,7 +15,7 @@ namespace ShopingList.Services
             var groceriesList = await context.GroceryLists.Where(gl => gl.UserId == userId).OrderByDescending(gl => gl.TimeStamp).ToListAsync();
             foreach (var gl in groceriesList)
             {
-                gl.Product_GroceryList = await this.GetProductGroceryListByGLId(gl.Id);
+                gl.Product_GroceryList = await GetProductGroceryListByGLId(gl.Id);
             }
             return groceriesList;
         }
@@ -40,7 +40,6 @@ namespace ShopingList.Services
             try
             {
                 var groceryList = await context.GroceryLists.FirstOrDefaultAsync(groceries => groceries.Id == Id);
-                groceryList.Product_GroceryList = await this.GetProductGroceryListByGLId(Id);
                 return groceryList;
             }
             catch (Exception ex)
@@ -90,7 +89,7 @@ namespace ShopingList.Services
             }
         }
 
-        public async Task<Product_GroceryList> InsertPrductGroceryList(Product_GroceryList productGroceryList) 
+        public async Task<Product_GroceryList> InsertPrductGroceryList(Product_GroceryList productGroceryList)
         {
             try
             {
@@ -105,7 +104,7 @@ namespace ShopingList.Services
             }
         }
 
-        public async Task UpdateProductCroceryList(Product_GroceryList productGroceryList) 
+        public async Task UpdateProductCroceryList(Product_GroceryList productGroceryList)
         {
             try
             {

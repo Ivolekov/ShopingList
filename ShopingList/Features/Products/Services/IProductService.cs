@@ -4,12 +4,12 @@ namespace ShopingList.Features.Products.Services
 {
     public interface IProductService
     {
-        Task<Product> CreateProduct(Product product);
-        Task<IEnumerable<Product>> GetAllProducts();
-        Task<IEnumerable<Product>> GetProductsByPrefix(string prefix);
-        Task<Product> GetProductById(int productId);
-        Task<Product> GetProductByName(string productName);
-        Task UpdateProduct(Product product);
-        Task DeleteProduct(Product product);
+        Task<Product> CreateProductAsync(Product product);
+        Task<IEnumerable<Product>> GetAllProductsAsync();
+        Task<IEnumerable<Product>> GetProductsByPrefixAsync(string prefix);
+        Task<Product> GetProductByIdAsync(int productId);
+        Task<Product> GetProductByNameAsync(string productName);
+        Task UpdateProductAsync(Product product);
+        Task DeleteProductAsync(Product product);
     }
 }

@@ -35,7 +35,7 @@ namespace ShopingListTest
         public async Task Index_ShouldReturn_ViewModel_ProductsList()
         {
             //Arrange
-            A.CallTo(() => productService.GetAllProducts()).Returns(new List<Product>
+            A.CallTo(() => productService.GetAllProductsAsync()).Returns(new List<Product>
             {
                 new Product
                 {
@@ -68,7 +68,7 @@ namespace ShopingListTest
         public async Task Create_ShoudReturn_ViewModel_CategoriesList()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetAllProductCategories()).Returns(A.CollectionOfFake<ProductCategory>(5));
+            A.CallTo(() => categoryService.GetAllProductCategoriesAsync()).Returns(A.CollectionOfFake<ProductCategory>(5));
 
             //Act
             var response = productsController.Create();
@@ -100,7 +100,7 @@ namespace ShopingListTest
         public async Task Create_RequerdFieldName_ShoudReturn_ModelStateError_And_CategoriesList()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetAllProductCategories()).Returns(A.CollectionOfFake<ProductCategory>(5));
+            A.CallTo(() => categoryService.GetAllProductCategoriesAsync()).Returns(A.CollectionOfFake<ProductCategory>(5));
 
             var product = new ProductModel() 
             {
@@ -129,7 +129,7 @@ namespace ShopingListTest
         public async Task Create_MaxLength100_Name_ShoudReturn_ModelStateError_And_CategoriesList()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetAllProductCategories()).Returns(A.CollectionOfFake<ProductCategory>(5));
+            A.CallTo(() => categoryService.GetAllProductCategoriesAsync()).Returns(A.CollectionOfFake<ProductCategory>(5));
 
             var product = new ProductModel()
             {
@@ -161,7 +161,7 @@ namespace ShopingListTest
         public async Task Create_RequiredCategory_ShoudReturn_ModelStateError_And_CategoriesList()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetAllProductCategories()).Returns(A.CollectionOfFake<ProductCategory>(5));
+            A.CallTo(() => categoryService.GetAllProductCategoriesAsync()).Returns(A.CollectionOfFake<ProductCategory>(5));
 
             var product = new ProductModel()
             {
@@ -193,11 +193,11 @@ namespace ShopingListTest
         public async Task Edit_ShouldReturn_NotFound() 
         {
             //Arrange
-            A.CallTo(() => productService.GetProductById(A<int>.Ignored)).Returns(new Product().Id == 0 ? null : new Product());
+            A.CallTo(() => productService.GetProductByIdAsync(A<int>.Ignored)).Returns(new Product().Id == 0 ? null : new Product());
 
             //Act
             var response = productsController.Edit(0);
-            var actualResult = await response as NotFoundResult;
+            var actualResult = await response as NotFoundObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -208,8 +208,8 @@ namespace ShopingListTest
         public async Task Edit_ShouldReturn_Product_And_CategoriesList()
         {
             //Arrange
-            A.CallTo(() => productService.GetProductById(A<int>.Ignored)).Returns(new Product { Category = A.Fake<ProductCategory>() });
-            A.CallTo(() => categoryService.GetAllProductCategories()).Returns(A.CollectionOfFake<ProductCategory>(5));
+            A.CallTo(() => productService.GetProductByIdAsync(A<int>.Ignored)).Returns(new Product { Category = A.Fake<ProductCategory>() });
+            A.CallTo(() => categoryService.GetAllProductCategoriesAsync()).Returns(A.CollectionOfFake<ProductCategory>(5));
 
             //Act
             var response = productsController.Edit(0);
@@ -231,7 +231,7 @@ namespace ShopingListTest
 
             //Act
             var response = productsController.Edit(-1, fakeProduct);
-            var actualResult = await response as NotFoundResult;
+            var actualResult = await response as NotFoundObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -242,7 +242,7 @@ namespace ShopingListTest
         public async Task Edit_RequerdFieldName_ShoudReturn_ModelStateError_And_CategoriesList()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetAllProductCategories()).Returns(A.CollectionOfFake<ProductCategory>(5));
+            A.CallTo(() => categoryService.GetAllProductCategoriesAsync()).Returns(A.CollectionOfFake<ProductCategory>(5));
 
             var product = new ProductModel()
             {
@@ -271,7 +271,7 @@ namespace ShopingListTest
         public async Task Edit_RequiredCategory_ShoudReturn_ModelStateError_And_CategoriesList()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetAllProductCategories()).Returns(A.CollectionOfFake<ProductCategory>(5));
+            A.CallTo(() => categoryService.GetAllProductCategoriesAsync()).Returns(A.CollectionOfFake<ProductCategory>(5));
 
             var product = new ProductModel()
             {
@@ -303,7 +303,7 @@ namespace ShopingListTest
         public async Task Edit_MaxLength100_Name_ShoudReturn_ModelStateError_And_CategoriesList()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetAllProductCategories()).Returns(A.CollectionOfFake<ProductCategory>(5));
+            A.CallTo(() => categoryService.GetAllProductCategoriesAsync()).Returns(A.CollectionOfFake<ProductCategory>(5));
 
             var product = new ProductModel()
             {
@@ -335,11 +335,11 @@ namespace ShopingListTest
         public async Task Delete_ShouldReturn_NotFound()
         {
             //Arrange
-            A.CallTo(() => productService.GetProductById(A<int>.Ignored)).Returns(new Product().Id == 0 ? null : new Product());
+            A.CallTo(() => productService.GetProductByIdAsync(A<int>.Ignored)).Returns(new Product().Id == 0 ? null : new Product());
 
             //Act
             var response = productsController.Delete(0);
-            var actualResult = await response as NotFoundResult;
+            var actualResult = await response as NotFoundObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -350,8 +350,8 @@ namespace ShopingListTest
         public async Task Delete_ShouldReturn_Product_And_CategoriesList()
         {
             //Arrange
-            A.CallTo(() => productService.GetProductById(A<int>.Ignored)).Returns(A.Fake<Product>());
-            A.CallTo(() => categoryService.GetAllProductCategories()).Returns(A.CollectionOfFake<ProductCategory>(5));
+            A.CallTo(() => productService.GetProductByIdAsync(A<int>.Ignored)).Returns(A.Fake<Product>());
+            A.CallTo(() => categoryService.GetAllProductCategoriesAsync()).Returns(A.CollectionOfFake<ProductCategory>(5));
 
             //Act
             var response = productsController.Delete(0);
@@ -369,7 +369,7 @@ namespace ShopingListTest
         public async Task DeleteConfirm_ShoudReturn_Index()
         {
             //Arrange
-            A.CallTo(() => productService.GetProductById(A<int>.Ignored)).Returns(A.Fake<Product>());
+            A.CallTo(() => productService.GetProductByIdAsync(A<int>.Ignored)).Returns(A.Fake<Product>());
             productsController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
 
             //Act
@@ -385,7 +385,7 @@ namespace ShopingListTest
         public async Task GetProductListByPrefix() 
         {
             //Arrange
-            A.CallTo(() => productService.GetProductsByPrefix(A<string>.Ignored)).Returns(A.CollectionOfFake<Product>(3));
+            A.CallTo(() => productService.GetProductsByPrefixAsync(A<string>.Ignored)).Returns(A.CollectionOfFake<Product>(3));
 
             //Act
             var response = productsController.GetProductsList("Prefix");
@@ -402,7 +402,7 @@ namespace ShopingListTest
         public async Task GetProductListByPrefix_ShouldReturn_JsonNull()
         {
             //Arrange
-            A.CallTo(() => productService.GetProductsByPrefix(A<string>.Ignored)).Returns(A.CollectionOfFake<Product>(3));
+            A.CallTo(() => productService.GetProductsByPrefixAsync(A<string>.Ignored)).Returns(A.CollectionOfFake<Product>(3));
 
             //Act
             var response = productsController.GetProductsList(string.Empty);

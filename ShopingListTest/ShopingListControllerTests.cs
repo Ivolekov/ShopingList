@@ -35,7 +35,7 @@ namespace ShopingListTest
         public async Task Index_ShouldReturn_ViewModel_GroceryList()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetAllGroceriesList(A<string>._)).Returns(A.CollectionOfFake<GroceryList>(5));
+            A.CallTo(() => shopingListService.GetAllGroceriesListAsync(A<string>._)).Returns(A.CollectionOfFake<GroceryList>(5));
 
             //Act
             var response = shopingListController.Index();
@@ -106,11 +106,11 @@ namespace ShopingListTest
         public async Task Edit_ShouldReturn_NotFound()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetGroceriesListById(A<int>.Ignored)).Returns(new GroceryList().Id == 0 ? null : new GroceryList());
+            A.CallTo(() => shopingListService.GetGroceriesListByIdAsync(A<int>.Ignored)).Returns(new GroceryList().Id == 0 ? null : new GroceryList());
 
             //Act
             var response = shopingListController.Edit(0);
-            var actualResult = await response as NotFoundResult;
+            var actualResult = await response as NotFoundObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -121,11 +121,11 @@ namespace ShopingListTest
         public async Task Edit_ShouldReturn_Unauthorized()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetGroceriesListById(A<int>.Ignored)).Returns(new GroceryList { Id = 1});
+            A.CallTo(() => shopingListService.GetGroceriesListByIdAsync(A<int>.Ignored)).Returns(new GroceryList { Id = 1});
 
             //Act
             var response = shopingListController.Edit(1);
-            var actualResult = await response as UnauthorizedResult;
+            var actualResult = await response as UnauthorizedObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -136,7 +136,7 @@ namespace ShopingListTest
         public async Task Edit_ShouldReturn_GroceryList()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetGroceriesListById(A<int>.Ignored)).Returns(new GroceryList { Id = 1 , UserId = "1"});
+            A.CallTo(() => shopingListService.GetGroceriesListByIdAsync(A<int>.Ignored)).Returns(new GroceryList { Id = 1 , UserId = "1"});
 
             //Act
             var response = shopingListController.Edit(1);
@@ -155,7 +155,7 @@ namespace ShopingListTest
 
             //Act
             var response = shopingListController.Edit(-1, fakeGroceryList);
-            var actualResult = await response as NotFoundResult;
+            var actualResult = await response as NotFoundObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -166,12 +166,12 @@ namespace ShopingListTest
         public async Task EditGroceryList_ShouldReturn_Unauthorized()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetGroceriesListById(A<int>.Ignored)).Returns(new GroceryList { Id = 1 });
+            A.CallTo(() => shopingListService.GetGroceriesListByIdAsync(A<int>.Ignored)).Returns(new GroceryList { Id = 1 });
             var groceryList = new GroceriesListModel { Id = 1 };
 
             //Act
             var response = shopingListController.Edit(1, groceryList);
-            var actualResult = await response as UnauthorizedResult;
+            var actualResult = await response as UnauthorizedObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -208,7 +208,7 @@ namespace ShopingListTest
         public async Task EditGroceryList_ShoudReturn_Model()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetGroceriesListById(A<int>.Ignored)).Returns(new GroceryList { Id = 1, UserId = "1"});
+            A.CallTo(() => shopingListService.GetGroceriesListByIdAsync(A<int>.Ignored)).Returns(new GroceryList { Id = 1, UserId = "1"});
             var griceryList = new GroceriesListModel()
             {
                 Id = 1
@@ -222,7 +222,7 @@ namespace ShopingListTest
             //Assert
             Assert.IsNotNull(actualResult);
             Assert.IsNotNull(actualResult.Model);
-            var model = actualResult.Model as GroceryList;
+            var model = actualResult.Model as GroceriesListModel;
             Assert.IsNotNull(model);
             Assert.That(model.Id, Is.EqualTo(griceryList.Id));
         }
@@ -231,11 +231,11 @@ namespace ShopingListTest
         public async Task Delete_ShouldReturn_NotFound()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetGroceriesListById(A<int>.Ignored)).Returns(new GroceryList().Id == 0 ? null : new GroceryList());
+            A.CallTo(() => shopingListService.GetGroceriesListByIdAsync(A<int>.Ignored)).Returns(new GroceryList().Id == 0 ? null : new GroceryList());
 
             //Act
             var response = shopingListController.Delete(0);
-            var actualResult = await response as NotFoundResult;
+            var actualResult = await response as NotFoundObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -246,11 +246,11 @@ namespace ShopingListTest
         public async Task Delete_ShouldReturn_Unauthorized()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetGroceriesListById(A<int>.Ignored)).Returns(new GroceryList { Id = 1 });
+            A.CallTo(() => shopingListService.GetGroceriesListByIdAsync(A<int>.Ignored)).Returns(new GroceryList { Id = 1 });
 
             //Act
             var response = shopingListController.Delete(1);
-            var actualResult = await response as UnauthorizedResult;
+            var actualResult = await response as UnauthorizedObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -261,7 +261,7 @@ namespace ShopingListTest
         public async Task DeleteGroceryList_ShoudReturn_Model()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetGroceriesListById(A<int>.Ignored)).Returns(new GroceryList { Id = 1, UserId = "1" });
+            A.CallTo(() => shopingListService.GetGroceriesListByIdAsync(A<int>.Ignored)).Returns(new GroceryList { Id = 1, UserId = "1" });
             var griceryList = new GroceriesListModel()
             {
                 Id = 1
@@ -274,7 +274,7 @@ namespace ShopingListTest
             //Assert
             Assert.IsNotNull(actualResult);
             Assert.IsNotNull(actualResult.Model);
-            var model = actualResult.Model as GroceryList;
+            var model = actualResult.Model as GroceriesListModel;
             Assert.IsNotNull(model);
             Assert.That(model.Id, Is.EqualTo(griceryList.Id));
         }
@@ -283,11 +283,11 @@ namespace ShopingListTest
         public async Task DeleteConfirmed_ShouldReturn_Unauthorized()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetGroceriesListById(A<int>.Ignored)).Returns(new GroceryList { Id = 1 });
+            A.CallTo(() => shopingListService.GetGroceriesListByIdAsync(A<int>.Ignored)).Returns(new GroceryList { Id = 1 });
 
             //Act
             var response = shopingListController.DeleteConfirmed(1);
-            var actualResult = await response as UnauthorizedResult;
+            var actualResult = await response as UnauthorizedObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -298,7 +298,7 @@ namespace ShopingListTest
         public async Task DeleteConfirmed_ShouldReturn_Index()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetGroceriesListById(A<int>.Ignored)).Returns(new GroceryList { Id = 1, UserId = "1" });
+            A.CallTo(() => shopingListService.GetGroceriesListByIdAsync(A<int>.Ignored)).Returns(new GroceryList { Id = 1, UserId = "1" });
             shopingListController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
 
             //Act
@@ -314,11 +314,11 @@ namespace ShopingListTest
         public async Task AddProductToTable_ShouldReturn_ProductNotFound()
         {
             //Arrange
-            A.CallTo(() => productService.GetProductByName(A<string>.Ignored)).Returns(new Product().Id == 0 ? null : new Product());
+            A.CallTo(() => productService.GetProductByNameAsync(A<string>.Ignored)).Returns(new Product().Id == 0 ? null : new Product());
 
             //Act
             var response = shopingListController.AddProductToTable(String.Empty, 0);
-            var actualResult = await response as NotFoundResult;
+            var actualResult = await response as NotFoundObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -329,12 +329,12 @@ namespace ShopingListTest
         public async Task AddProductToTable_ShouldReturn_GroceryListNotFound()
         {
             //Arrange
-            A.CallTo(() => productService.GetProductByName(A<string>.Ignored)).Returns(new Product());
-            A.CallTo(() => shopingListService.GetGroceriesListById(A<int>.Ignored)).Returns(new GroceryList().Id == 0 ? null : new GroceryList());
+            A.CallTo(() => productService.GetProductByNameAsync(A<string>.Ignored)).Returns(new Product());
+            A.CallTo(() => shopingListService.GetGroceriesListByIdAsync(A<int>.Ignored)).Returns(new GroceryList().Id == 0 ? null : new GroceryList());
 
             //Act
             var response = shopingListController.AddProductToTable(String.Empty, 0);
-            var actualResult = await response as NotFoundResult;
+            var actualResult = await response as NotFoundObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -345,8 +345,8 @@ namespace ShopingListTest
         public async Task AddProductToTable_ShouldReturn_Json()
         {
             //Arrange
-            A.CallTo(() => productService.GetProductByName(A<string>.Ignored)).Returns(A.Fake<Product>());
-            A.CallTo(() => shopingListService.GetGroceriesListById(A<int>.Ignored)).Returns(A.Fake<GroceryList>());
+            A.CallTo(() => productService.GetProductByNameAsync(A<string>.Ignored)).Returns(A.Fake<Product>());
+            A.CallTo(() => shopingListService.GetGroceriesListByIdAsync(A<int>.Ignored)).Returns(A.Fake<GroceryList>());
 
             //Act
             var response = shopingListController.AddProductToTable(String.Empty, 0);
@@ -362,11 +362,11 @@ namespace ShopingListTest
         public async Task UpdateProductGroceryList_ShouldReturn_NotFound()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetProductGroceryListById(A<int>.Ignored)).Returns(new Product_GroceryList().Id == 0 ? null : new Product_GroceryList());
+            A.CallTo(() => shopingListService.GetProductGroceryListByIdAsync(A<int>.Ignored)).Returns(new Product_GroceryList().Id == 0 ? null : new Product_GroceryList());
 
             //Act
             var response = shopingListController.UpdateProductGroceryList(0);
-            var actualResult = await response as NotFoundResult;
+            var actualResult = await response as NotFoundObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -377,9 +377,9 @@ namespace ShopingListTest
         public async Task UpdateProductGroceryList_ShouldReturn_Ok()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetProductGroceryListById(A<int>.Ignored)).Returns(A.Fake<Product_GroceryList>());
+            A.CallTo(() => shopingListService.GetProductGroceryListByIdAsync(A<int>.Ignored)).Returns(A.Fake<Product_GroceryList>());
             var fakeProductGL = A.Fake<Product_GroceryList>();
-            A.CallTo(() => shopingListService.UpdateProductCroceryList(fakeProductGL));
+            A.CallTo(() => shopingListService.UpdateProductCroceryListAsync(fakeProductGL));
             shopingListController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
 
             //Act
@@ -397,11 +397,11 @@ namespace ShopingListTest
         public async Task DeleteProductGroceryList_ShouldReturn_NotFound()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetProductGroceryListById(A<int>.Ignored)).Returns(new Product_GroceryList().Id == 0 ? null : new Product_GroceryList());
+            A.CallTo(() => shopingListService.GetProductGroceryListByIdAsync(A<int>.Ignored)).Returns(new Product_GroceryList().Id == 0 ? null : new Product_GroceryList());
 
             //Act
             var response = shopingListController.DeleteProductGroceryList(0);
-            var actualResult = await response as NotFoundResult;
+            var actualResult = await response as NotFoundObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -412,9 +412,9 @@ namespace ShopingListTest
         public async Task DeleteProductGroceryList_ShouldReturn_Ok()
         {
             //Arrange
-            A.CallTo(() => shopingListService.GetProductGroceryListById(A<int>.Ignored)).Returns(A.Fake<Product_GroceryList>());
+            A.CallTo(() => shopingListService.GetProductGroceryListByIdAsync(A<int>.Ignored)).Returns(A.Fake<Product_GroceryList>());
             var fakeProductGL = A.Fake<Product_GroceryList>();
-            A.CallTo(() => shopingListService.DeleteProductCroceryList(fakeProductGL));
+            A.CallTo(() => shopingListService.DeleteProductCroceryListAsync(fakeProductGL));
             shopingListController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
 
             //Act

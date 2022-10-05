@@ -12,7 +12,7 @@ namespace ShopingList.Features.Products
 
         public ProductService(ShopingListDBContext context) => this.context = context;
 
-        public async Task<Product> CreateProduct(Product product)
+        public async Task<Product> CreateProductAsync(Product product)
         {
             try
             {
@@ -27,7 +27,7 @@ namespace ShopingList.Features.Products
             }
         }
 
-        public async Task<ProductCategory> CreateProductCategory(ProductCategory category)
+        public async Task<ProductCategory> CreateProductCategoryAsync(ProductCategory category)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace ShopingList.Features.Products
             }
         }
 
-        public async Task<IEnumerable<ProductCategory>> GetAllProductCategories()
+        public async Task<IEnumerable<ProductCategory>> GetAllProductCategoriesAsync()
         {
             try
             {
@@ -55,7 +55,7 @@ namespace ShopingList.Features.Products
             }
         }
 
-        public async Task<IEnumerable<Product>> GetAllProducts()
+        public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
             try
             {
@@ -68,7 +68,7 @@ namespace ShopingList.Features.Products
             }
         }
 
-        public async Task<IEnumerable<Product>> GetProductsByPrefix(string prefix)
+        public async Task<IEnumerable<Product>> GetProductsByPrefixAsync(string prefix)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace ShopingList.Features.Products
             }
         }
 
-        public async Task<Product> GetProductById(int productId)
+        public async Task<Product> GetProductByIdAsync(int productId)
         {
             try
             {
@@ -93,7 +93,7 @@ namespace ShopingList.Features.Products
             }
         }
 
-        public async Task<Product> GetProductByName(string productName)
+        public async Task<Product> GetProductByNameAsync(string productName)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace ShopingList.Features.Products
             }
         }
 
-        public async Task<ProductCategory> GetProductCategoryById(int categoryId)
+        public async Task<ProductCategory> GetProductCategoryByIdAsync(int categoryId)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace ShopingList.Features.Products
             }
         }
 
-        public async Task UpdateProduct(Product product)
+        public async Task UpdateProductAsync(Product product)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace ShopingList.Features.Products
             }
         }
 
-        public async Task UpdateProductCategory(ProductCategory category)
+        public async Task UpdateProductCategoryAsync(ProductCategory category)
         {
             try
             {
@@ -148,7 +148,7 @@ namespace ShopingList.Features.Products
             }
         }
 
-        public async Task DeleteProduct(Product product)
+        public async Task DeleteProductAsync(Product product)
         {
             try
             {
@@ -162,7 +162,7 @@ namespace ShopingList.Features.Products
             }
         }
 
-        public async Task DeleteProductCategory(ProductCategory category)
+        public async Task DeleteProductCategoryAsync(ProductCategory category)
         {
             try
             {
@@ -176,7 +176,7 @@ namespace ShopingList.Features.Products
             }
         }
 
-        public async Task<bool> CheckCategoryCanBeDeleted(int categoryId)
+        public async Task<bool> CheckCategoryCanBeDeletedAsync(int categoryId)
         {
             try
             {

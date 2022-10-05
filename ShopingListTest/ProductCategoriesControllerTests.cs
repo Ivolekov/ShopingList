@@ -33,7 +33,7 @@ namespace ShopingListTest
         public async Task Index_ShouldReturn_ViewModel_ProductsList()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetAllProductCategories()).Returns(A.CollectionOfFake<ProductCategory>(5));
+            A.CallTo(() => categoryService.GetAllProductCategoriesAsync()).Returns(A.CollectionOfFake<ProductCategory>(5));
 
             //Act
             var response = productsCategoriesController.Index();
@@ -104,11 +104,11 @@ namespace ShopingListTest
         public async Task Edit_ShouldReturn_NotFound()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetProductCategoryById(A<int>.Ignored)).Returns(new ProductCategory().Id == 0 ? null : new ProductCategory());
+            A.CallTo(() => categoryService.GetProductCategoryByIdAsync(A<int>.Ignored)).Returns(new ProductCategory().Id == 0 ? null : new ProductCategory());
 
             //Act
             var response = productsCategoriesController.Edit(0);
-            var actualResult = await response as NotFoundResult;
+            var actualResult = await response as NotFoundObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -119,7 +119,7 @@ namespace ShopingListTest
         public async Task Edit_ShouldReturn_ProductCategory()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetProductCategoryById(A<int>.Ignored)).Returns(A.Fake<ProductCategory>());
+            A.CallTo(() => categoryService.GetProductCategoryByIdAsync(A<int>.Ignored)).Returns(A.Fake<ProductCategory>());
 
             //Act
             var response = productsCategoriesController.Edit(0);
@@ -138,7 +138,7 @@ namespace ShopingListTest
 
             //Act
             var response = productsCategoriesController.Edit(-1, fakeProductCategory);
-            var actualResult = await response as NotFoundResult;
+            var actualResult = await response as NotFoundObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -149,7 +149,7 @@ namespace ShopingListTest
         public async Task Edit_RequerdFieldName_ShoudReturn_ModelStateError()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetAllProductCategories()).Returns(A.CollectionOfFake<ProductCategory>(5));
+            A.CallTo(() => categoryService.GetAllProductCategoriesAsync()).Returns(A.CollectionOfFake<ProductCategory>(5));
 
             var productCategory = new ProductCategoryModel()
             {
@@ -175,11 +175,11 @@ namespace ShopingListTest
         public async Task Delete_ShouldReturn_NotFound()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetProductCategoryById(A<int>.Ignored)).Returns(new ProductCategory().Id == 0 ? null : new ProductCategory());
+            A.CallTo(() => categoryService.GetProductCategoryByIdAsync(A<int>.Ignored)).Returns(new ProductCategory().Id == 0 ? null : new ProductCategory());
 
             //Act
             var response = productsCategoriesController.Delete(0);
-            var actualResult = await response as NotFoundResult;
+            var actualResult = await response as NotFoundObjectResult;
 
             //Assert
             Assert.IsNotNull(actualResult);
@@ -190,7 +190,7 @@ namespace ShopingListTest
         public async Task Delete_ShouldReturn_Product_And_CategoriesList()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetProductCategoryById(A<int>.Ignored)).Returns(A.Fake<ProductCategory>());
+            A.CallTo(() => categoryService.GetProductCategoryByIdAsync(A<int>.Ignored)).Returns(A.Fake<ProductCategory>());
 
             //Act
             var response = productsCategoriesController.Delete(0);
@@ -205,7 +205,7 @@ namespace ShopingListTest
         public async Task DeleteConfirm_ShoudReturn_Index()
         {
             //Arrange
-            A.CallTo(() => categoryService.GetProductCategoryById(A<int>.Ignored)).Returns(A.Fake<ProductCategory>());
+            A.CallTo(() => categoryService.GetProductCategoryByIdAsync(A<int>.Ignored)).Returns(A.Fake<ProductCategory>());
             productsCategoriesController.TempData = new TempDataDictionary(A.Fake<HttpContext>(), A.Fake<ITempDataProvider>());
 
             //Act

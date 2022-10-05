@@ -28,7 +28,7 @@ namespace ShopingList.Features.Products
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            var productListRes = await productService.GetAllProducts();
+            var productListRes = await productService.GetAllProductsAsync();
             var productList = new List<ProductVM>();
             foreach (var p in productListRes)
             {
@@ -46,7 +46,7 @@ namespace ShopingList.Features.Products
         // GET: Products/Create
         public async Task<IActionResult> Create()
         {
-            var categoryList = await categoryService.GetAllProductCategories();
+            var categoryList = await categoryService.GetAllProductCategoriesAsync();
             var listItems = categoryList.Select(u => new SelectListItem { Value = u.Id.ToString(), Text = u.Name }).ToList();
             listItems.Insert(0, new SelectListItem() { Value = "-1", Text = "Choose product category..." });
             ViewData["CategoryId"] = new SelectList(listItems, "Value", "Text");
@@ -67,11 +67,11 @@ namespace ShopingList.Features.Products
                     CategoryId = model.CategoryId
 
                 };
-                await productService.CreateProduct(product);
+                await productService.CreateProductAsync(product);
                 TempData["AlertMsg"] = $"Product {product.Name} was added.";
                 return RedirectToAction(nameof(Index));
             }
-            var categoryList = await categoryService.GetAllProductCategories();
+            var categoryList = await categoryService.GetAllProductCategoriesAsync();
             var listItems = categoryList.Select(u => new SelectListItem { Value = u.Id.ToString(), Text = u.Name }).ToList();
             listItems.Insert(0, new SelectListItem() { Value = "-1", Text = "Choose product category..." });
             ViewData["CategoryId"] = new SelectList(listItems, "Value", "Text");
@@ -81,13 +81,13 @@ namespace ShopingList.Features.Products
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            Product product = await productService.GetProductById(id);
+            Product product = await productService.GetProductByIdAsync(id);
             if (product == null)
             {
                 return NotFound($"Product do not exists. ID: {id}");
             }
 
-            var categoryList = await categoryService.GetAllProductCategories();
+            var categoryList = await categoryService.GetAllProductCategoriesAsync();
             ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
             ProductVM productVM = new ProductVM
             {
@@ -120,7 +120,7 @@ namespace ShopingList.Features.Products
                         CategoryId = model.CategoryId
 
                     };
-                    await productService.UpdateProduct(product);
+                    await productService.UpdateProductAsync(product);
                     TempData["AlertMsg"] = $"Product {product.Name} was edited.";
                 }
                 catch (DbUpdateConcurrencyException)
@@ -130,7 +130,7 @@ namespace ShopingList.Features.Products
                 return RedirectToAction(nameof(Index));
             }
 
-            var categoryList = await categoryService.GetAllProductCategories();
+            var categoryList = await categoryService.GetAllProductCategoriesAsync();
             ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
             return View(model);
         }
@@ -139,12 +139,12 @@ namespace ShopingList.Features.Products
         public async Task<IActionResult> Delete(int id)
         {
 
-            var product = await productService.GetProductById(id);
+            var product = await productService.GetProductByIdAsync(id);
             if (product == null)
             {
                 return NotFound($"Product do not exists. ID: {id}");
             }
-            var categoryList = await categoryService.GetAllProductCategories();
+            var categoryList = await categoryService.GetAllProductCategoriesAsync();
             ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
             return View(product);
         }
@@ -154,10 +154,10 @@ namespace ShopingList.Features.Products
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await productService.GetProductById(id);
+            var product = await productService.GetProductByIdAsync(id);
             if (product != null)
             {
-                await productService.DeleteProduct(product);
+                await productService.DeleteProductAsync(product);
                 TempData["AlertMsg"] = $"Product {product.Name} was deleted.";
             }
             return RedirectToAction(nameof(Index));
@@ -170,7 +170,7 @@ namespace ShopingList.Features.Products
             {
                 return Json(null);
             }
-            var products = await productService.GetProductsByPrefix(prefix.Trim());
+            var products = await productService.GetProductsByPrefixAsync(prefix.Trim());
             return Json(products);
         }
     }

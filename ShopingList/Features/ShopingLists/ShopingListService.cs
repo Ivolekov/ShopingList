@@ -10,17 +10,17 @@ namespace ShopingList.Features.ShopingLists
 
         public ShopingListService(ShopingListDBContext context) => this.context = context;
 
-        public async Task<ICollection<GroceryList>> GetAllGroceriesList(string userId)
+        public async Task<ICollection<GroceryList>> GetAllGroceriesListAsync(string userId)
         {
             var groceriesList = await context.GroceryLists.Where(gl => gl.UserId == userId).OrderByDescending(gl => gl.TimeStamp).ToListAsync();
             foreach (var gl in groceriesList)
             {
-                gl.Product_GroceryList = await GetProductGroceryListByGLId(gl.Id);
+                gl.Product_GroceryList = await GetProductGroceryListByGLIdAsync(gl.Id);
             }
             return groceriesList;
         }
 
-        public async Task<GroceryList> CreateGroceriesList(GroceryList groceriesList)
+        public async Task<GroceryList> CreateGroceriesListAsync(GroceryList groceriesList)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace ShopingList.Features.ShopingLists
             }
         }
 
-        public async Task<GroceryList> GetGroceriesListById(int Id)
+        public async Task<GroceryList> GetGroceriesListByIdAsync(int Id)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace ShopingList.Features.ShopingLists
             }
         }
 
-        public async Task UpdateGroceriesList(GroceryList groceriesList)
+        public async Task UpdateGroceriesListAsync(GroceryList groceriesList)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace ShopingList.Features.ShopingLists
             }
         }
 
-        public async Task DeleteGroceriesList(GroceryList groceriesList)
+        public async Task DeleteGroceriesListAsync(GroceryList groceriesList)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace ShopingList.Features.ShopingLists
             }
         }
 
-        public async Task<List<Product_GroceryList>> GetProductGroceryListByGLId(int groceryListId)
+        public async Task<List<Product_GroceryList>> GetProductGroceryListByGLIdAsync(int groceryListId)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace ShopingList.Features.ShopingLists
             }
         }
 
-        public async Task<Product_GroceryList> InsertPrductGroceryList(Product_GroceryList productGroceryList)
+        public async Task<Product_GroceryList> InsertPrductGroceryListAsync(Product_GroceryList productGroceryList)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace ShopingList.Features.ShopingLists
             }
         }
 
-        public async Task UpdateProductCroceryList(Product_GroceryList productGroceryList)
+        public async Task UpdateProductCroceryListAsync(Product_GroceryList productGroceryList)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace ShopingList.Features.ShopingLists
             }
         }
 
-        public async Task DeleteProductCroceryList(Product_GroceryList productGroceryList)
+        public async Task DeleteProductCroceryListAsync(Product_GroceryList productGroceryList)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace ShopingList.Features.ShopingLists
             }
         }
 
-        public async Task<Product_GroceryList> GetProductGroceryListById(int productGroceryListId)
+        public async Task<Product_GroceryList> GetProductGroceryListByIdAsync(int productGroceryListId)
         {
             try
             {

@@ -25,7 +25,7 @@ namespace ShopingList.Features.Products
         // GET: ProductCategories
         public async Task<IActionResult> Index()
         {
-            return View(await categoryService.GetAllProductCategories());
+            return View(await categoryService.GetAllProductCategoriesAsync());
         }
 
         // GET: ProductCategories/Create
@@ -46,7 +46,7 @@ namespace ShopingList.Features.Products
                     Name = model.Name
                 };
 
-                await categoryService.CreateProductCategory(category);
+                await categoryService.CreateProductCategoryAsync(category);
                 TempData["AlertMsg"] = $"Category {category.Name} was added.";
                 return RedirectToAction(nameof(Index));
             }
@@ -56,7 +56,7 @@ namespace ShopingList.Features.Products
         // GET: ProductCategories/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var category = await categoryService.GetProductCategoryById(id);
+            var category = await categoryService.GetProductCategoryByIdAsync(id);
             if (category == null || id != category.Id)
             {
                 return NotFound($"Category do not exists. ID: {id}");
@@ -88,7 +88,7 @@ namespace ShopingList.Features.Products
                         Id = model.Id,
                         Name = model.Name
                     };
-                    await categoryService.UpdateProductCategory(productCategory);
+                    await categoryService.UpdateProductCategoryAsync(productCategory);
                     TempData["AlertMsg"] = $"Category {productCategory.Name} was edeted.";
                 }
                 catch (DbUpdateConcurrencyException)
@@ -104,7 +104,7 @@ namespace ShopingList.Features.Products
         // GET: ProductCategories/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var productCategory = await categoryService.GetProductCategoryById(id);
+            var productCategory = await categoryService.GetProductCategoryByIdAsync(id);
             if (productCategory == null)
             {
                 return NotFound($"Category do not exists. ID: {id}");
@@ -118,16 +118,16 @@ namespace ShopingList.Features.Products
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var productCategory = await categoryService.GetProductCategoryById(id);
+            var productCategory = await categoryService.GetProductCategoryByIdAsync(id);
 
-            if (await categoryService.CheckCategoryCanBeDeleted(id))
+            if (await categoryService.CheckCategoryCanBeDeletedAsync(id))
             {
                 TempData["AlertMsgError"] = $"Тhe category cannot be deleted. There are some products with this category.";
                 return RedirectToAction(nameof(Index));
             }
             if (productCategory != null)
             {
-                await categoryService.DeleteProductCategory(productCategory);
+                await categoryService.DeleteProductCategoryAsync(productCategory);
             }
             TempData["AlertMsg"] = $"Category {productCategory.Name} was deleted.";
             return RedirectToAction(nameof(Index));

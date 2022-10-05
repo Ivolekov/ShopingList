@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.UI.V5.Pages.Internal;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
-using ShopingList.Data;
 using ShopingList.Data.Models;
+using ShopingList.Extentions;
 using ShopingList.Features.Products.Models;
 using ShopingList.Features.Products.Services;
 
@@ -19,13 +12,27 @@ namespace ShopingList.Features.Products
     public class ProductCategoriesController : Controller
     {
         private readonly ICategoryService categoryService;
-
-        public ProductCategoriesController(ICategoryService categoryService) => this.categoryService = categoryService;
+        private readonly ILogger logger;
+        public ProductCategoriesController(ICategoryService categoryService, ILogger logger)
+        {
+            this.categoryService = categoryService;
+            this.logger = logger;
+        }
 
         // GET: ProductCategories
         public async Task<IActionResult> Index()
         {
-            return View(await categoryService.GetAllProductCategoriesAsync());
+            try
+            {
+                return View(await categoryService.GetAllProductCategoriesAsync());
+            }
+            catch (Exception ex)
+            {
+                TempData["ExeptionMessage"] = ex.Message;
+                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                return Redirect("/Error");
+            }
         }
 
         // GET: ProductCategories/Create
@@ -39,34 +46,55 @@ namespace ShopingList.Features.Products
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name")] ProductCategoryModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                ProductCategory category = new ProductCategory
+                if (ModelState.IsValid)
                 {
-                    Name = model.Name
-                };
+                    ProductCategory category = new ProductCategory
+                    {
+                        Name = model.Name
+                    };
 
-                await categoryService.CreateProductCategoryAsync(category);
-                TempData["AlertMsg"] = $"Category {category.Name} was added.";
-                return RedirectToAction(nameof(Index));
+                    await categoryService.CreateProductCategoryAsync(category);
+                    TempData["AlertMsg"] = $"Category {category.Name} was added.";
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(model);
             }
-            return View(model);
+            catch (Exception ex)
+            {
+                TempData["ExeptionMessage"] = ex.Message;
+                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                return Redirect("/Error");
+            }
+            
         }
 
         // GET: ProductCategories/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var category = await categoryService.GetProductCategoryByIdAsync(id);
-            if (category == null || id != category.Id)
+            try
             {
-                return NotFound($"Category do not exists. ID: {id}");
+                var category = await categoryService.GetProductCategoryByIdAsync(id);
+                if (category == null || id != category.Id)
+                {
+                    return NotFound($"Category do not exists. ID: {id}");
+                }
+                ProductCategoryModel pcModel = new ProductCategoryModel
+                {
+                    Id = id,
+                    Name = category.Name
+                };
+                return View(pcModel);
             }
-            ProductCategoryModel pcModel = new ProductCategoryModel
+            catch (Exception ex)
             {
-                Id = id,
-                Name = category.Name
-            };
-            return View(pcModel);
+                TempData["ExeptionMessage"] = ex.Message;
+                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                return Redirect("/Error");
+            }
         }
 
         // POST: ProductCategories/Edit/5
@@ -74,43 +102,63 @@ namespace ShopingList.Features.Products
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] ProductCategoryModel model)
         {
-            if (id != model.Id)
+            try
             {
-                return NotFound($"Category do not exists. ID: {id}");
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (id != model.Id)
                 {
-                    ProductCategory productCategory = new ProductCategory
+                    return NotFound($"Category do not exists. ID: {id}");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    try
                     {
-                        Id = model.Id,
-                        Name = model.Name
-                    };
-                    await categoryService.UpdateProductCategoryAsync(productCategory);
-                    TempData["AlertMsg"] = $"Category {productCategory.Name} was edeted.";
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    throw;
-                }
+                        ProductCategory productCategory = new ProductCategory
+                        {
+                            Id = model.Id,
+                            Name = model.Name
+                        };
+                        await categoryService.UpdateProductCategoryAsync(productCategory);
+                        TempData["AlertMsg"] = $"Category {productCategory.Name} was edeted.";
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        throw;
+                    }
 
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(model);
             }
-            return View(model);
+            catch (Exception ex)
+            {
+                TempData["ExeptionMessage"] = ex.Message;
+                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                return Redirect("/Error");
+            }
         }
 
         // GET: ProductCategories/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            var productCategory = await categoryService.GetProductCategoryByIdAsync(id);
-            if (productCategory == null)
+            try
             {
-                return NotFound($"Category do not exists. ID: {id}");
-            }
+                var productCategory = await categoryService.GetProductCategoryByIdAsync(id);
+                if (productCategory == null)
+                {
+                    return NotFound($"Category do not exists. ID: {id}");
+                }
 
-            return View(productCategory);
+                return View(productCategory);
+            }
+            catch (Exception ex)
+            {
+                TempData["ExeptionMessage"] = ex.Message;
+                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                return Redirect("/Error");
+            }
         }
 
         // POST: ProductCategories/Delete/5
@@ -118,20 +166,29 @@ namespace ShopingList.Features.Products
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var productCategory = await categoryService.GetProductCategoryByIdAsync(id);
-
-            if (await categoryService.CheckCategoryCanBeDeletedAsync(id))
+            try
             {
-                TempData["AlertMsgError"] = $"Тhe category cannot be deleted. There are some products with this category.";
+                var productCategory = await categoryService.GetProductCategoryByIdAsync(id);
+
+                if (await categoryService.CheckCategoryCanBeDeletedAsync(id))
+                {
+                    TempData["AlertMsgError"] = $"Тhe category cannot be deleted. There are some products with this category.";
+                    return RedirectToAction(nameof(Index));
+                }
+                if (productCategory != null)
+                {
+                    await categoryService.DeleteProductCategoryAsync(productCategory);
+                }
+                TempData["AlertMsg"] = $"Category {productCategory.Name} was deleted.";
                 return RedirectToAction(nameof(Index));
             }
-            if (productCategory != null)
+            catch (Exception ex)
             {
-                await categoryService.DeleteProductCategoryAsync(productCategory);
+                TempData["ExeptionMessage"] = ex.Message;
+                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                return Redirect("/Error");
             }
-            TempData["AlertMsg"] = $"Category {productCategory.Name} was deleted.";
-            return RedirectToAction(nameof(Index));
         }
-
     }
 }

@@ -323,17 +323,6 @@ namespace ShopingList.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("RememberMe")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasDiscriminator().HasValue("User");
                 });
 
@@ -391,7 +380,7 @@ namespace ShopingList.Migrations
             modelBuilder.Entity("ShopingList.Data.Models.GroceryList", b =>
                 {
                     b.HasOne("ShopingList.Data.Models.User", "User")
-                        .WithMany()
+                        .WithMany("GroceryLists")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -442,6 +431,11 @@ namespace ShopingList.Migrations
             modelBuilder.Entity("ShopingList.Data.Models.ProductCategory", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("ShopingList.Data.Models.User", b =>
+                {
+                    b.Navigation("GroceryLists");
                 });
 #pragma warning restore 612, 618
         }

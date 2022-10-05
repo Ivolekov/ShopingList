@@ -41,6 +41,11 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Login";
 });
+
+var serviceProvider = builder.Services.BuildServiceProvider();
+var logger = serviceProvider.GetService<ILogger<ProductsController>>();
+builder.Services.AddSingleton(typeof(ILogger), logger);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

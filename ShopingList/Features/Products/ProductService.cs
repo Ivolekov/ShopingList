@@ -16,7 +16,7 @@ namespace ShopingList.Features.Products
         {
             try
             {
-                context.Products.Add(product);
+                await context.Products.AddAsync(product);
                 await context.SaveChangesAsync();
                 return product;
             }

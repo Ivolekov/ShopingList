@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using ShopingList.Features.Products;
+using Microsoft.Extensions.Logging;
 using ShopingList.Features.Products.Models;
 using ShopingList.Features.Products.Services;
 
@@ -10,13 +10,15 @@ namespace ShopingListTest
         private static IProductService productService;
         private static ICategoryService categoryService;
         private static ProductsController productsController;
+        private static ILogger logger;
 
         [SetUp]
         public void Setup()
         {
             productService = A.Fake<IProductService>();
             categoryService = A.Fake<ICategoryService>();
-            productsController = new ProductsController(productService, categoryService);
+            logger = A.Fake<ILogger>();
+            productsController = new ProductsController(productService, categoryService, logger);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
            {

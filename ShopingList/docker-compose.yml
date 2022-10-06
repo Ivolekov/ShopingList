@@ -1,0 +1,29 @@
+﻿version: '3.7'
+
+services:
+
+  web:
+    container_name: 'shopinglist'
+    image: 'shopinglist'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+     - "5432:5432"
+    depends_on:
+     - "postgres"
+    networks:
+      - shopinglist-network
+
+  postgres:
+    container_name: 'postgres'
+    image: postgres
+    environment:
+      # change this for a "real" app!
+      POSTGRES_PASSWORD: password
+    networks:
+      - shopinglist-network
+
+networks:
+  shopinglist-network:
+    driver: bridge

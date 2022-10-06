@@ -1,1 +1,1 @@
-# ShopingList App
+# Shoping List App

@@ -76,15 +76,8 @@
             for (int i = 0; i < pages; i++)
             {
                 int pageNum = i + 1;
-                if (pageNum == Model.CurrentPage)
-                {
-                        <li class="page-item active"><a asp-action="Index" asp-route-currentPage="@pageNum" class="page-link">@pageNum</a></li>
-                }
-                else
-                {
-                        <li class="page-item"><a asp-action="Index" asp-route-currentPage="@pageNum" class="page-link">@pageNum</a></li>
-                }
-                
+                string active = pageNum == Model.CurrentPage ? "active" : "";
+                <li class="page-item @active"><a asp-action="Index" asp-route-currentPage="@pageNum" class="page-link">@pageNum</a></li>
             }
 
             if (Model.CurrentPage != pages)

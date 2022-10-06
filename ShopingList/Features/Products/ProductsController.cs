@@ -5,6 +5,7 @@ using ShopingList.Data.Models;
 using ShopingList.Extentions;
 using ShopingList.Features.Products.Models;
 using ShopingList.Features.Products.Services;
+using System.Configuration;
 
 namespace ShopingList.Features.Products
 {
@@ -14,22 +15,24 @@ namespace ShopingList.Features.Products
         private readonly IProductService productService;
         private readonly ICategoryService categoryService;
         private readonly ILogger logger;
+        private readonly IConfiguration configuration;
 
-        public ProductsController(IProductService productService, ICategoryService categoryService, ILogger logger)
+        public ProductsController(IProductService productService, ICategoryService categoryService, ILogger logger, IConfiguration configuration)
         {
             this.productService = productService;
             this.categoryService = categoryService;
             this.logger = logger;
+            this.configuration = configuration;
         }
 
         // GET: Products
-        public async Task<IActionResult> Index(int pageSize = 10, int currentPage = 1)
+        public async Task<IActionResult> Index(int currentPage = 1)
         {
             try
             {
                 var productListRes = await productService.GetAllProductsAsync();
                 var productList = new PagedProductVM();
-
+                var pageSize = configuration != null ? configuration.GetValue<int>("PageSize") : 10;
                 foreach (var p in productListRes.Skip((currentPage - 1) * pageSize).Take(pageSize))
                 {
                     ProductVM productVM = new ProductVM
@@ -43,15 +46,15 @@ namespace ShopingList.Features.Products
 
                 productList.CurrentPage = currentPage;
                 productList.ItemsCount = productListRes.Count();
-                productList.PageSize = 10;
+                productList.PageSize = pageSize;
 
                 return View(productList);
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
 
@@ -64,16 +67,16 @@ namespace ShopingList.Features.Products
             {
                 var categoryList = await categoryService.GetAllProductCategoriesAsync();
                 var listItems = categoryList.Select(u => new SelectListItem { Value = u.Id.ToString(), Text = u.Name }).ToList();
-                listItems.Insert(0, new SelectListItem() { Value = "-1", Text = "Choose product category..." });
-                ViewData["CategoryId"] = new SelectList(listItems, "Value", "Text");
+                listItems.Insert(0, new SelectListItem() { Value = "-1", Text = Messages.ChooseProductCategory });
+                ViewData[Messages.CategoryId] = new SelectList(listItems, "Value", "Text");
 
                 return View();
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage ] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(Messages.LogUsername, this.User.GetUsername()));
                 return Redirect("/Error");
             }
 
@@ -95,26 +98,26 @@ namespace ShopingList.Features.Products
 
                 if (await productService.IsProductExistsAsync(product)) 
                 {
-                    TempData["AlertMsgError"] = $"Product {model.Name} already exists in the same category.";
+                    TempData[Messages.AlertMsgError] = string.Format(Messages.ProductExists, model.Name);
                 }
                 else if (ModelState.IsValid)
                 {
                     await productService.CreateProductAsync(product);
-                    TempData["AlertMsg"] = $"Product {product.Name} was added.";
+                    TempData[Messages.AlertMsg] = string.Format(Messages.ProductAdded, model.Name);
                     return RedirectToAction(nameof(Index));
                 }
 
                 var categoryList = await categoryService.GetAllProductCategoriesAsync();
                 var listItems = categoryList.Select(u => new SelectListItem { Value = u.Id.ToString(), Text = u.Name }).ToList();
-                listItems.Insert(0, new SelectListItem() { Value = "-1", Text = "Choose product category..." });
-                ViewData["CategoryId"] = new SelectList(listItems, "Value", "Text");
+                listItems.Insert(0, new SelectListItem() { Value = "-1", Text = Messages.ChooseProductCategory });
+                ViewData[Messages.CategoryId] = new SelectList(listItems, "Value", "Text");
                 return View(model);
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage ] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
 
@@ -128,11 +131,11 @@ namespace ShopingList.Features.Products
                 Product product = await productService.GetProductByIdAsync(id);
                 if (product == null)
                 {
-                    return NotFound($"Product do not exists. ID: {id}");
+                    return NotFound(string.Format(Messages.ProductNotFound, id));
                 }
 
                 var categoryList = await categoryService.GetAllProductCategoriesAsync();
-                ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
+                ViewData[Messages.CategoryId] = new SelectList(categoryList, "Id", "Name");
                 ProductVM productVM = new ProductVM
                 {
                     Id = product.Id,
@@ -144,9 +147,9 @@ namespace ShopingList.Features.Products
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage ] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
 
@@ -161,7 +164,7 @@ namespace ShopingList.Features.Products
             {
                 if (id != model.Id)
                 {
-                    return NotFound($"Product do not exists. ID: {id}");
+                    return NotFound(string.Format(Messages.ProductNotFound, id));
                 }
 
                 if (ModelState.IsValid)
@@ -174,20 +177,20 @@ namespace ShopingList.Features.Products
 
                     };
                     await productService.UpdateProductAsync(product);
-                    TempData["AlertMsg"] = $"Product {product.Name} was edited.";
+                    TempData[Messages.AlertMsg] = string.Format(Messages.ProductEdited, product.Name);
 
                     return RedirectToAction(nameof(Index));
                 }
 
                 var categoryList = await categoryService.GetAllProductCategoriesAsync();
-                ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
+                ViewData[Messages.CategoryId] = new SelectList(categoryList, "Id", "Name");
                 return View(model);
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage ] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -200,17 +203,17 @@ namespace ShopingList.Features.Products
                 var product = await productService.GetProductByIdAsync(id);
                 if (product == null)
                 {
-                    return NotFound($"Product do not exists. ID: {id}");
+                    return NotFound(string.Format(Messages.ProductNotFound, id));
                 }
                 var categoryList = await categoryService.GetAllProductCategoriesAsync();
-                ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
+                ViewData[Messages.CategoryId] = new SelectList(categoryList, "Id", "Name");
                 return View(product);
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage ] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -226,15 +229,15 @@ namespace ShopingList.Features.Products
                 if (product != null)
                 {
                     await productService.DeleteProductAsync(product);
-                    TempData["AlertMsg"] = $"Product {product.Name} was deleted.";
+                    TempData[Messages.AlertMsg] = string.Format(Messages.ProductDeleted, product.Name);
                 }
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage ] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -253,9 +256,9 @@ namespace ShopingList.Features.Products
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
 

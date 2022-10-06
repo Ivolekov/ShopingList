@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ShopingList.Features.Products.Models;
 using ShopingList.Features.Products.Services;
@@ -10,13 +11,13 @@ namespace ShopingListTest
         private static ICategoryService categoryService;
         private static ProductCategoriesController productsCategoriesController;
         private static ILogger logger;
-
+        private static IConfiguration config;
         [SetUp]
         public void Setup()
         {
             categoryService = A.Fake<ICategoryService>();
             logger = A.Fake<ILogger>();
-            productsCategoriesController = new ProductCategoriesController(categoryService, logger);
+            productsCategoriesController = new ProductCategoriesController(categoryService, logger, config);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
                {
@@ -44,9 +45,9 @@ namespace ShopingListTest
             //Assert
             Assert.IsInstanceOf(typeof(ViewResult), actualResult);
             Assert.IsNotNull(actualResult);
-            var model = actualResult.Model as List<ProductCategory>;
+            var model = actualResult.Model as PagedProductCategoryVM;
             Assert.IsNotNull(model);
-            Assert.That(model.Count, Is.EqualTo(5));
+            Assert.That(model.Categories.Count, Is.EqualTo(5));
         }
 
         [Test]

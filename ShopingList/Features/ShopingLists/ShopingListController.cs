@@ -42,9 +42,9 @@ namespace ShopingList.Features.ShopingLists
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -58,12 +58,12 @@ namespace ShopingList.Features.ShopingLists
 
                 if (groceryList == null)
                 {
-                    return NotFound($"Shoping list do not exists. ID: {id}");
+                    return NotFound(string.Format(Messages.ShopingListNotFound, id));
                 }
 
                 if (groceryList.UserId != User.GetId())
                 {
-                    return Unauthorized($"You are not authorize for this operation.");
+                    return Unauthorized(Messages.NotAuthorize);
                 }
                 GroceryListVM model = new GroceryListVM
                 {
@@ -76,9 +76,9 @@ namespace ShopingList.Features.ShopingLists
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -104,7 +104,7 @@ namespace ShopingList.Features.ShopingLists
                         UserId = User.GetId()
                     };
                     await shopingListService.CreateGroceriesListAsync(groceriesList);
-                    TempData["AlertMsg"] = $"Shoping list  {groceriesList.Title} was created.";
+                    TempData[Messages.AlertMsg] = string.Format(Messages.ShopingListCreated, groceriesList.Title);
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -112,9 +112,9 @@ namespace ShopingList.Features.ShopingLists
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
 
@@ -129,12 +129,12 @@ namespace ShopingList.Features.ShopingLists
 
                 if (groceryList == null)
                 {
-                    return NotFound($"Shoping list do not exists. ID: {id}");
+                    return NotFound(string.Format(Messages.ShopingListNotFound, id));
                 }
 
                 if (groceryList.UserId != User.GetId())
                 {
-                    return Unauthorized("You are not authorize for this operation.");
+                    return Unauthorized(Messages.NotAuthorize);
                 }
                 GroceriesListModel model = new GroceriesListModel
                 {
@@ -146,9 +146,9 @@ namespace ShopingList.Features.ShopingLists
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -162,7 +162,7 @@ namespace ShopingList.Features.ShopingLists
             {
                 if (id != model.Id)
                 {
-                    return NotFound($"Shoping list do not exists. ID: {id}");
+                    return NotFound(string.Format(Messages.ShopingListNotFound, id));
                 }
 
                 if (ModelState.IsValid)
@@ -171,20 +171,20 @@ namespace ShopingList.Features.ShopingLists
 
                     if (groceryList.UserId != User.GetId())
                     {
-                        return Unauthorized("You are not authorize for this operation.");
+                        return Unauthorized(Messages.NotAuthorize);
                     }
 
                     groceryList.Title = model.Title;
                     await shopingListService.UpdateGroceriesListAsync(groceryList);
-                    TempData["AlertMsgEdit"] = $"Shoping list {groceryList.Title} was edited.";
+                    TempData[Messages.AlertMsgEdit] = string.Format(Messages.ShopingListEdited, groceryList.Title);
                 }
 
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
 
@@ -200,11 +200,11 @@ namespace ShopingList.Features.ShopingLists
 
                 if (groceryList == null)
                 {
-                    return NotFound($"Shoping list do not exists. ID: {id}");
+                    return NotFound(string.Format(Messages.ShopingListNotFound, id));
                 }
                 if (groceryList.UserId != User.GetId())
                 {
-                    return Unauthorized("You are not authorize for this operation.");
+                    return Unauthorized(Messages.NotAuthorize);
                 }
 
                 GroceriesListModel model = new GroceriesListModel
@@ -217,9 +217,9 @@ namespace ShopingList.Features.ShopingLists
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -235,23 +235,23 @@ namespace ShopingList.Features.ShopingLists
 
                 if (groceryList == null)
                 {
-                    return NotFound($"Shoping list do not exists. ID: {id}");
+                    return NotFound(string.Format(Messages.ShopingListNotFound, id));
                 }
                 if (groceryList.UserId != User.GetId())
                 {
-                    return Unauthorized("You are not authorize for this operation.");
+                    return Unauthorized(Messages.NotAuthorize);
                 }
 
                 await shopingListService.DeleteGroceriesListAsync(groceryList);
-                TempData["AlertMsg"] = $"Shoping list  {groceryList.Title} was deleted.";
+                TempData[Messages.AlertMsg] = string.Format(Messages.ShopingListDeleted, groceryList.Title);
 
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -265,11 +265,11 @@ namespace ShopingList.Features.ShopingLists
                 var groceryList = await shopingListService.GetGroceriesListByIdAsync(groceryListId);
                 if (product == null)
                 {
-                    return NotFound($"Product {productName} do not exists.");
+                    return NotFound(string.Format(Messages.ProductNotFound, productName));
                 }
                 if (groceryList == null)
                 {
-                    return NotFound($"Shoping list do not exists. ID: {groceryListId}");
+                    return NotFound(string.Format(Messages.ShopingListNotFound, groceryListId));
                 }
                 Product_GroceryList productGroceryList = new Product_GroceryList
                 {
@@ -290,9 +290,9 @@ namespace ShopingList.Features.ShopingLists
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -305,21 +305,21 @@ namespace ShopingList.Features.ShopingLists
                 var productGL = await shopingListService.GetProductGroceryListByIdAsync(producGroceryListId);
                 if (productGL == null)
                 {
-                    return NotFound($"There is not such product in shoping list do not exists. ID: {producGroceryListId}");
+                    return NotFound(string.Format(Messages.ProductNotExistsInShopingList, producGroceryListId));
                 }
                 productGL.IsBought = !productGL.IsBought;
 
                 await shopingListService.UpdateProductCroceryListAsync(productGL);
                 string markUnmark = productGL.IsBought ? "marked" : "unmarked";
-                TempData["AlertMsgRow"] = $"Product {productGL.Product.Name} was {markUnmark}.";
+                TempData[Messages.AlertMsgRow] = $"Product {productGL.Product.Name} was {markUnmark}.";
 
                 return Ok(productGL.IsBought);
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -333,19 +333,19 @@ namespace ShopingList.Features.ShopingLists
 
                 if (productGL == null)
                 {
-                    return NotFound($"There is not such product in shoping list do not exists. ID: {producGroceryListId}");
+                    return NotFound(string.Format(Messages.ProductNotExistsInShopingList, producGroceryListId));
                 }
 
                 await shopingListService.DeleteProductCroceryListAsync(productGL);
-                TempData["AlertMsgRow"] = $"Product {productGL.Product.Name} was removed.";
+                TempData[Messages.AlertMsgRow] = $"Product {productGL.Product.Name} was removed.";
 
                 return Ok();
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }

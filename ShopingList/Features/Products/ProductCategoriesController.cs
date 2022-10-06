@@ -13,20 +13,22 @@ namespace ShopingList.Features.Products
     {
         private readonly ICategoryService categoryService;
         private readonly ILogger logger;
-        public ProductCategoriesController(ICategoryService categoryService, ILogger logger)
+        private readonly IConfiguration configuration;
+        public ProductCategoriesController(ICategoryService categoryService, ILogger logger, IConfiguration configuration)
         {
             this.categoryService = categoryService;
             this.logger = logger;
+            this.configuration = configuration;
         }
 
         // GET: ProductCategories
-        public async Task<IActionResult> Index(int pageSize = 10, int currentPage = 1)
+        public async Task<IActionResult> Index(int currentPage = 1)
         {
             try
             {
                 var categoriesRes = await categoryService.GetAllProductCategoriesAsync();
                 var categoryList = new PagedProductCategoryVM();
-
+                var pageSize = configuration != null ? configuration.GetValue<int>("PageSize") : 10;
                 foreach (var c in categoriesRes.Skip((currentPage - 1) * pageSize).Take(pageSize))
                 {
                     ProductCategory category = new ProductCategory
@@ -39,14 +41,14 @@ namespace ShopingList.Features.Products
 
                 categoryList.CurrentPage = currentPage;
                 categoryList.ItemsCount = categoriesRes.Count();
-                categoryList.PageSize = 10;
+                categoryList.PageSize = pageSize;
                 return View(categoryList);
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -66,7 +68,7 @@ namespace ShopingList.Features.Products
             {
                 if (await categoryService.IsCategoryExistsAsync(model.Name))
                 {
-                    TempData["AlertMsgError"] = $"Category {model.Name} already exists.";
+                    TempData[Messages.AlertMsgError] = string.Format(Messages.CategoryExists);
                 }
                 else if (ModelState.IsValid)
                 {
@@ -76,16 +78,16 @@ namespace ShopingList.Features.Products
                     };
 
                     await categoryService.CreateProductCategoryAsync(category);
-                    TempData["AlertMsg"] = $"Category {category.Name} was added.";
+                    TempData[Messages.AlertMsg] = $"Category {category.Name} was added.";
                     return RedirectToAction(nameof(Index));
                 }
                 return View(model);
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
 
@@ -99,7 +101,7 @@ namespace ShopingList.Features.Products
                 var category = await categoryService.GetProductCategoryByIdAsync(id);
                 if (category == null || id != category.Id)
                 {
-                    return NotFound($"Category do not exists. ID: {id}");
+                    return NotFound(string.Format(Messages.CategoryNotFound, id));
                 }
                 ProductCategoryModel pcModel = new ProductCategoryModel
                 {
@@ -110,9 +112,9 @@ namespace ShopingList.Features.Products
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -126,7 +128,7 @@ namespace ShopingList.Features.Products
             {
                 if (id != model.Id)
                 {
-                    return NotFound($"Category do not exists. ID: {id}");
+                    return NotFound(string.Format(Messages.CategoryNotFound, id));
                 }
 
                 if (ModelState.IsValid)
@@ -137,7 +139,7 @@ namespace ShopingList.Features.Products
                         Name = model.Name
                     };
                     await categoryService.UpdateProductCategoryAsync(productCategory);
-                    TempData["AlertMsg"] = $"Category {productCategory.Name} was edeted.";
+                    TempData[Messages.AlertMsg] = string.Format(Messages.CategoryEdited, productCategory.Name);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -145,9 +147,9 @@ namespace ShopingList.Features.Products
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -160,16 +162,16 @@ namespace ShopingList.Features.Products
                 var productCategory = await categoryService.GetProductCategoryByIdAsync(id);
                 if (productCategory == null)
                 {
-                    return NotFound($"Category do not exists. ID: {id}");
+                    return NotFound(string.Format(Messages.CategoryNotFound, id));
                 }
 
                 return View(productCategory);
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }
@@ -185,21 +187,22 @@ namespace ShopingList.Features.Products
 
                 if (await categoryService.CheckCategoryCanBeDeletedAsync(id))
                 {
-                    TempData["AlertMsgError"] = $"Тhe category cannot be deleted. There are some products with this category.";
+                    TempData[Messages.AlertMsgError] = Messages.CategoryCantDeleted;
                     return RedirectToAction(nameof(Index));
                 }
                 if (productCategory != null)
                 {
                     await categoryService.DeleteProductCategoryAsync(productCategory);
+                    TempData[Messages.AlertMsg] = string.Format(Messages.CategoryDeleted, productCategory.Name);
                 }
-                TempData["AlertMsg"] = $"Category {productCategory.Name} was deleted.";
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                TempData["ExeptionMessage"] = ex.Message;
-                TempData["ExeptionInnerMessage"] = ex.InnerException != null ? ex.InnerException.Message : null;
-                logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
+                TempData[Messages.ExeptionMessage] = ex.Message;
+                TempData[Messages.ExeptionInnerMessage] = ex.InnerException != null ? ex.InnerException.Message : null;
+                logger.Log(LogLevel.Error, ex, string.Format(string.Format(Messages.LogUsername, this.User.GetUsername())));
                 return Redirect("/Error");
             }
         }

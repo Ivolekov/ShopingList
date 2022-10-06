@@ -20,11 +20,27 @@ namespace ShopingList.Features.Products
         }
 
         // GET: ProductCategories
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageSize = 10, int currentPage = 1)
         {
             try
             {
-                return View(await categoryService.GetAllProductCategoriesAsync());
+                var categoriesRes = await categoryService.GetAllProductCategoriesAsync();
+                var categoryList = new PagedProductCategoryVM();
+
+                foreach (var c in categoriesRes.Skip((currentPage - 1) * pageSize).Take(pageSize))
+                {
+                    ProductCategory category = new ProductCategory
+                    {
+                        Id = c.Id,
+                        Name = c.Name
+                    };
+                    categoryList.Categories.Add(category);
+                }
+
+                categoryList.CurrentPage = currentPage;
+                categoryList.ItemsCount = categoriesRes.Count();
+                categoryList.PageSize = 10;
+                return View(categoryList);
             }
             catch (Exception ex)
             {
@@ -48,7 +64,11 @@ namespace ShopingList.Features.Products
         {
             try
             {
-                if (ModelState.IsValid)
+                if (await categoryService.IsCategoryExistsAsync(model.Name))
+                {
+                    TempData["AlertMsgError"] = $"Category {model.Name} already exists.";
+                }
+                else if (ModelState.IsValid)
                 {
                     ProductCategory category = new ProductCategory
                     {

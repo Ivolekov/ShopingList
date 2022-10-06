@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ShopingList.Data.Models.ProductCategory>
+﻿@using ShopingList.Features.Products.Models
+@model PagedProductCategoryVM
 
 @{
     ViewData["Title"] = "Index";
@@ -22,17 +23,20 @@
         <strong>Error!</strong> @TempData["AlertMsgError"]
     </div>
 }
+<div>
+    <a asp-controller="Products" asp-action="Index">Back to product list</a>
+</div>
 <table class="table" id="custom-table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Name
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Categories) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -45,6 +49,53 @@
 }
     </tbody>
 </table>
-<div>
-    <a asp-controller="Products" asp-action="Index">Back to product list</a>
-</div>
+<nav aria-label="Product Page">
+    <ul class="pagination">
+        @if (Model.CurrentPage != 1)
+        {
+            int previousPage = Model.CurrentPage - 1;
+            <li class="page-item">
+                <a asp-action="Index" asp-route-currentPage="@previousPage" class="page-link">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        }
+
+        @{
+            var remainder = 0;
+            int itemCount = Model.ItemsCount;
+            int pageSize = Model.PageSize;
+            Math.DivRem(itemCount, pageSize, out remainder);
+            var pages = itemCount / pageSize;
+            if (remainder > 0)
+            {
+                pages++;
+            }
+
+            for (int i = 0; i < pages; i++)
+            {
+                int pageNum = i + 1;
+                if (pageNum == Model.CurrentPage)
+                {
+                    <li class="page-item active"><a asp-action="Index" asp-route-currentPage="@pageNum" class="page-link">@pageNum</a></li>
+                }
+                else
+                {
+                    <li class="page-item"><a asp-action="Index" asp-route-currentPage="@pageNum" class="page-link">@pageNum</a></li>
+                }
+
+            }
+
+            if (Model.CurrentPage != pages)
+            {
+                int nextPage = Model.CurrentPage + 1;
+                <li class="page-item">
+                    <a asp-action="Index" asp-route-currentPage="@nextPage" class="page-link">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            }
+        }
+    </ul>
+</nav>
+

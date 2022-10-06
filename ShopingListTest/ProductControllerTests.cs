@@ -61,9 +61,9 @@ namespace ShopingListTest
             //Assert
             Assert.IsInstanceOf(typeof(ViewResult), actualResult);
             Assert.IsNotNull(actualResult);
-            var model = actualResult.Model as List<ProductVM>;
+            var model = actualResult.Model as PagedProductVM;
             Assert.IsNotNull(model);
-            Assert.That(model.Count, Is.EqualTo(3));
+            Assert.That(model.Products.Count, Is.EqualTo(3));
         }
 
         [Test]

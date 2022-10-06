@@ -23,13 +23,14 @@ namespace ShopingList.Features.Products
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageSize = 10, int currentPage = 1)
         {
             try
             {
                 var productListRes = await productService.GetAllProductsAsync();
-                var productList = new List<ProductVM>();
-                foreach (var p in productListRes)
+                var productList = new PagedProductVM();
+
+                foreach (var p in productListRes.Skip((currentPage - 1) * pageSize).Take(pageSize))
                 {
                     ProductVM productVM = new ProductVM
                     {
@@ -37,8 +38,13 @@ namespace ShopingList.Features.Products
                         Name = p.Name,
                         Category = p.Category.Name
                     };
-                    productList.Add(productVM);
+                    productList.Products.Add(productVM);
                 }
+
+                productList.CurrentPage = currentPage;
+                productList.ItemsCount = productListRes.Count();
+                productList.PageSize = 10;
+
                 return View(productList);
             }
             catch (Exception ex)
@@ -80,18 +86,24 @@ namespace ShopingList.Features.Products
         {
             try
             {
-                if (ModelState.IsValid)
+                Product product = new Product
                 {
-                    Product product = new Product
-                    {
-                        Name = model.Name,
-                        CategoryId = model.CategoryId
+                    Name = model.Name,
+                    CategoryId = model.CategoryId
 
-                    };
+                };
+
+                if (await productService.IsProductExistsAsync(product)) 
+                {
+                    TempData["AlertMsgError"] = $"Product {model.Name} already exists in the same category.";
+                }
+                else if (ModelState.IsValid)
+                {
                     await productService.CreateProductAsync(product);
                     TempData["AlertMsg"] = $"Product {product.Name} was added.";
                     return RedirectToAction(nameof(Index));
                 }
+
                 var categoryList = await categoryService.GetAllProductCategoriesAsync();
                 var listItems = categoryList.Select(u => new SelectListItem { Value = u.Id.ToString(), Text = u.Name }).ToList();
                 listItems.Insert(0, new SelectListItem() { Value = "-1", Text = "Choose product category..." });

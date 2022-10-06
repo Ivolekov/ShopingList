@@ -10,5 +10,6 @@ namespace ShopingList.Features.Products.Services
         Task UpdateProductCategoryAsync(ProductCategory category);
         Task DeleteProductCategoryAsync(ProductCategory category);
         Task<bool> CheckCategoryCanBeDeletedAsync(int categoryId);
+        Task<bool> IsCategoryExistsAsync(string categoryName);
     }
 }

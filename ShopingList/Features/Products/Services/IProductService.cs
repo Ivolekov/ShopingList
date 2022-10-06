@@ -11,5 +11,6 @@ namespace ShopingList.Features.Products.Services
         Task<Product> GetProductByNameAsync(string productName);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(Product product);
+        Task<bool> IsProductExistsAsync(Product product1);
     }
 }

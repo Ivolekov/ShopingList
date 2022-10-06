@@ -187,5 +187,31 @@ namespace ShopingList.Features.Products
                 throw;
             }
         }
+
+        public async Task<bool> IsProductExistsAsync(Product product)
+        {
+            try
+            {
+                return await context.Products.AnyAsync(p => p.Name.ToLower() == product.Name.ToLower() && p.Category.Id == product.CategoryId);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<bool> IsCategoryExistsAsync(string categoryName)
+        {
+            try
+            {
+                return await context.ProductCategories.AnyAsync(c => c.Name.ToLower() == categoryName.ToLower());
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
     }
 }

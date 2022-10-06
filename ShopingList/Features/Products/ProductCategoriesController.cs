@@ -68,7 +68,7 @@ namespace ShopingList.Features.Products
                 logger.Log(LogLevel.Error, ex, string.Format($"Username: {this.User.GetUsername()}"));
                 return Redirect("/Error");
             }
-            
+
         }
 
         // GET: ProductCategories/Edit/5
@@ -111,20 +111,13 @@ namespace ShopingList.Features.Products
 
                 if (ModelState.IsValid)
                 {
-                    try
+                    ProductCategory productCategory = new ProductCategory
                     {
-                        ProductCategory productCategory = new ProductCategory
-                        {
-                            Id = model.Id,
-                            Name = model.Name
-                        };
-                        await categoryService.UpdateProductCategoryAsync(productCategory);
-                        TempData["AlertMsg"] = $"Category {productCategory.Name} was edeted.";
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        throw;
-                    }
+                        Id = model.Id,
+                        Name = model.Name
+                    };
+                    await categoryService.UpdateProductCategoryAsync(productCategory);
+                    TempData["AlertMsg"] = $"Category {productCategory.Name} was edeted.";
 
                     return RedirectToAction(nameof(Index));
                 }
